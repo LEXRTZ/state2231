@@ -1,0 +1,2093 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>State 2231</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0e1a;
+    --surface: #111827;
+    --surface2: #1a2235;
+    --border: #2a3a55;
+    --accent: #4a8fd4;
+    --accent2: #c8a84b;
+    --text: #d4dff0;
+    --text-muted: #7a90b0;
+    --text-dim: #4a607a;
+    --danger: #c0392b;
+    --warning: #c8a84b;
+    --success: #2e7d5e;
+    --tab-active: #1e3a5f;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Crimson Pro', Georgia, serif;
+    font-size: 17px;
+    line-height: 1.7;
+    min-height: 100vh;
+  }
+
+  /* Background texture */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse at 20% 20%, rgba(74,143,212,0.06) 0%, transparent 60%),
+      radial-gradient(ellipse at 80% 80%, rgba(200,168,75,0.04) 0%, transparent 60%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .wrapper { position: relative; z-index: 1; }
+
+  /* HEADER */
+  header {
+    background: linear-gradient(180deg, #0d1525 0%, #111827 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 28px 40px 0;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 4px 30px rgba(0,0,0,0.5);
+  }
+
+  .header-top {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20px;
+    gap: 12px;
+  }
+
+  .site-title {
+    font-family: 'Cinzel', serif;
+    font-size: 26px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    color: #fff;
+    text-shadow: 0 0 30px rgba(74,143,212,0.4);
+  }
+
+  .site-title span {
+    color: var(--accent2);
+  }
+
+  .site-subtitle {
+    font-family: 'Crimson Pro', serif;
+    font-size: 13px;
+    letter-spacing: 0.2em;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    margin-top: 3px;
+  }
+
+  /* LANGUAGE SWITCHER */
+  .lang-switcher {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    overflow-x: auto;
+    scrollbar-width: none;
+    width: 100%;
+  }
+
+  .lang-switcher::-webkit-scrollbar { display: none; }
+
+  .lang-btn {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding: 7px 14px;
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    color: var(--text-muted);
+    font-family: 'Crimson Pro', serif;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+    letter-spacing: 0.05em;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .lang-btn:hover {
+    border-color: var(--accent);
+    color: var(--text);
+    background: rgba(74,143,212,0.08);
+  }
+
+  .lang-btn.active {
+    border-color: var(--accent);
+    background: rgba(74,143,212,0.15);
+    color: #fff;
+  }
+
+  .lang-flag { font-size: 18px; line-height: 1; }
+
+  /* TABS */
+  .tab-nav {
+    display: flex;
+    gap: 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .tab-nav::-webkit-scrollbar { display: none; }
+
+  .tab-btn {
+    padding: 12px 22px;
+    background: transparent;
+    border: none;
+    border-bottom: 3px solid transparent;
+    color: var(--text-muted);
+    font-family: 'Cinzel', serif;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+    text-transform: uppercase;
+  }
+
+  .tab-btn:hover {
+    color: var(--text);
+    background: rgba(74,143,212,0.05);
+  }
+
+  .tab-btn.active {
+    color: var(--accent2);
+    border-bottom-color: var(--accent2);
+    background: rgba(200,168,75,0.05);
+  }
+
+  /* CONTENT */
+  .content {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 50px 40px;
+  }
+
+  .tab-panel { display: none; animation: fadeIn 0.3s ease; }
+  .tab-panel.active { display: block; }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* SECTION STYLING */
+  .section {
+    margin-bottom: 50px;
+    padding-bottom: 50px;
+    border-bottom: 1px solid var(--border);
+  }
+  .section:last-child { border-bottom: none; }
+
+  .section-title {
+    font-family: 'Cinzel', serif;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--accent2);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid rgba(200,168,75,0.2);
+  }
+
+  .rule-title {
+    font-family: 'Cinzel', serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--accent);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin: 28px 0 10px;
+  }
+
+  p { margin-bottom: 12px; color: var(--text); }
+
+  ul { margin: 8px 0 14px 22px; }
+  ul li { margin-bottom: 6px; color: var(--text); }
+
+  ol { margin: 8px 0 14px 22px; }
+  ol li { margin-bottom: 6px; color: var(--text); }
+
+  /* CONSEQUENCE BOX */
+  .consequence-box {
+    background: rgba(192,57,43,0.08);
+    border: 1px solid rgba(192,57,43,0.25);
+    border-left: 3px solid var(--danger);
+    border-radius: 4px;
+    padding: 16px 20px;
+    margin: 16px 0;
+  }
+
+  .consequence-box .box-title {
+    font-family: 'Cinzel', serif;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #e57373;
+    margin-bottom: 10px;
+    font-weight: 600;
+  }
+
+  .consequence-box ul, .consequence-box ol { margin-left: 18px; }
+  .consequence-box li { color: #d4a0a0; }
+
+  /* NOTE BOX */
+  .note-box {
+    background: rgba(74,143,212,0.08);
+    border: 1px solid rgba(74,143,212,0.2);
+    border-left: 3px solid var(--accent);
+    border-radius: 4px;
+    padding: 16px 20px;
+    margin: 16px 0;
+  }
+
+  .note-box .box-title {
+    font-family: 'Cinzel', serif;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 10px;
+    font-weight: 600;
+  }
+
+  /* WARNING BOX */
+  .warning-box {
+    background: rgba(200,168,75,0.08);
+    border: 1px solid rgba(200,168,75,0.25);
+    border-left: 3px solid var(--accent2);
+    border-radius: 4px;
+    padding: 16px 20px;
+    margin: 16px 0;
+  }
+
+  .warning-box .box-title {
+    font-family: 'Cinzel', serif;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--accent2);
+    margin-bottom: 10px;
+    font-weight: 600;
+  }
+
+  /* EVENT TABLE */
+  .event-table-wrap { overflow-x: auto; margin: 20px 0; }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 15px;
+  }
+
+  thead th {
+    background: var(--surface2);
+    color: var(--accent2);
+    font-family: 'Cinzel', serif;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 12px 14px;
+    text-align: left;
+    border: 1px solid var(--border);
+  }
+
+  tbody tr { transition: background 0.15s; }
+  tbody tr:hover { background: rgba(74,143,212,0.05); }
+
+  tbody td {
+    padding: 10px 14px;
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-size: 15px;
+  }
+
+  tbody tr:nth-child(even) td { background: rgba(255,255,255,0.02); }
+
+  .alliance-name {
+    font-family: 'Cinzel', serif;
+    font-weight: 600;
+    color: var(--accent);
+    font-size: 14px;
+  }
+
+  /* NAP LIST */
+  .nap-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin: 16px 0;
+  }
+
+  .nap-badge {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 8px 18px;
+    font-family: 'Cinzel', serif;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--accent);
+    letter-spacing: 0.1em;
+  }
+
+  /* SCHEDULE */
+  .schedule-block {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 20px 24px;
+    margin: 16px 0;
+  }
+
+  .schedule-block h4 {
+    font-family: 'Cinzel', serif;
+    font-size: 13px;
+    color: var(--accent2);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 14px;
+  }
+
+  .schedule-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 7px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    font-size: 15px;
+  }
+
+  .schedule-item:last-child { border-bottom: none; }
+  .schedule-time { color: var(--accent); font-weight: 600; font-family: 'Crimson Pro', monospace; }
+
+  /* FOOTER */
+  footer {
+    text-align: center;
+    padding: 30px;
+    color: var(--text-dim);
+    font-size: 13px;
+    letter-spacing: 0.08em;
+    border-top: 1px solid var(--border);
+    margin-top: 40px;
+  }
+
+  strong { color: #e0eaff; font-weight: 600; }
+  em { color: var(--text-muted); }
+
+  @media (max-width: 600px) {
+    header { padding: 20px 16px 0; }
+    .content { padding: 30px 16px; }
+    .site-title { font-size: 20px; }
+    .tab-btn { padding: 10px 14px; font-size: 10px; }
+    .lang-btn { padding: 6px 10px; font-size: 13px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrapper">
+
+<header>
+  <div class="header-top">
+    <div>
+      <div class="site-title">State <span>2231</span></div>
+      <div class="site-subtitle" data-i18n="subtitle">Official Alliance Rules</div>
+    </div>
+    <div class="lang-switcher">
+      <button class="lang-btn active" onclick="setLang('en', this)">
+        <span class="lang-flag">🇬🇧</span> English
+      </button>
+      <button class="lang-btn" onclick="setLang('ko', this)">
+        <span class="lang-flag">🇰🇷</span> 한국어
+      </button>
+      <button class="lang-btn" onclick="setLang('tr', this)">
+        <span class="lang-flag">🇹🇷</span> Türkçe
+      </button>
+      <button class="lang-btn" onclick="setLang('ru', this)">
+        <span class="lang-flag">🇷🇺</span> Русский
+      </button>
+    </div>
+  </div>
+
+  <nav class="tab-nav">
+    <button class="tab-btn active" onclick="showTab('overview', this)" data-i18n-tab="tab_overview">Overview & Events</button>
+    <button class="tab-btn" onclick="showTab('nap', this)" data-i18n-tab="tab_nap">NAP Rules</button>
+    <button class="tab-btn" onclick="showTab('facility', this)" data-i18n-tab="tab_facility">Facility & Fortress</button>
+    <button class="tab-btn" onclick="showTab('castle', this)" data-i18n-tab="tab_castle">Castle & Presidency</button>
+    <button class="tab-btn" onclick="showTab('bia', this)" data-i18n-tab="tab_bia">Brothers in Arms</button>
+    <button class="tab-btn" onclick="showTab('transfers', this)" data-i18n-tab="tab_transfers">Transfers</button>
+  </nav>
+</header>
+
+<div class="content">
+
+  <!-- ===== OVERVIEW TAB ===== -->
+  <div class="tab-panel active" id="tab-overview">
+
+    <div class="section">
+      <div class="section-title" data-i18n="nap7_list_title">NAP Member Alliances</div>
+      <div class="nap-list" id="nap-list">
+        
+        <div class="nap-badge">PRV</div>
+        <div class="nap-badge">KOR</div>
+        <div class="nap-badge">LUN</div>
+        <div class="nap-badge">TBS</div>
+        <div class="nap-badge">HBU</div>
+        <div class="nap-badge">MGT</div>
+      
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title" data-i18n="event_times_title">Event Times (UTC)</div>
+      <div class="event-table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th data-i18n="th_alliance">Alliance</th>
+              <th>Bear 1</th>
+              <th>Bear 2</th>
+              <th>Bear 3</th>
+              <th>Crazy Joe</th>
+              <th>Foundry</th>
+              <th>Canyon Clash</th>
+            </tr>
+          </thead>
+          <tbody>
+            
+            <tr><td class="alliance-name">KOR</td><td>13:30</td><td>15:00</td><td>13:00</td><td>12/14</td><td>12/14</td><td>—</td></tr>
+            <tr><td class="alliance-name">PRV</td><td>21:00</td><td>02:00</td><td>14:30</td><td>21/02</td><td>14/19</td><td>14/19</td></tr>
+            <tr><td class="alliance-name">LUN</td><td>20:00</td><td>01:00</td><td>19:00</td><td>19/14</td><td>21/02</td><td>—</td></tr>
+            <tr><td class="alliance-name">TBS</td><td>13:00</td><td>19:00</td><td>14:00</td><td>14/19</td><td>14/19</td><td>—</td></tr>
+            <tr><td class="alliance-name">HBU</td><td>18:30</td><td>16:00</td><td>17:00</td><td>19/14</td><td>19/12</td><td>—</td></tr>
+            
+            <tr><td class="alliance-name">MGT</td><td>02:00</td><td>14:00</td><td>—</td><td>19/14</td><td>02/14</td><td>02/14</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ===== NAP RULES TAB ===== -->
+  <div class="tab-panel" id="tab-nap">
+    <div id="nap-content"></div>
+  </div>
+
+  <!-- ===== FACILITY & FORTRESS TAB ===== -->
+  <div class="tab-panel" id="tab-facility">
+    <div id="facility-content"></div>
+  </div>
+
+  <!-- ===== CASTLE & PRESIDENCY TAB ===== -->
+  <div class="tab-panel" id="tab-castle">
+    <div id="castle-content"></div>
+  </div>
+
+  <!-- ===== BROTHERS IN ARMS TAB ===== -->
+  <div class="tab-panel" id="tab-bia">
+    <div id="bia-content"></div>
+  </div>
+
+  <!-- ===== TRANSFERS TAB ===== -->
+  <div class="tab-panel" id="tab-transfers">
+    <div id="transfers-content"></div>
+  </div>
+
+</div>
+
+<footer>
+  <span data-i18n="footer_text">State 2231 · NAP Official Rules · All alliances are bound by these rules.</span>
+</footer>
+
+</div>
+
+<script>
+// ============================================================
+// TRANSLATIONS
+// ============================================================
+const translations = {
+
+// ============================================================
+// ENGLISH
+// ============================================================
+en: {
+  subtitle: "Official Alliance Rules",
+  tab_overview: "Overview & Events",
+  tab_nap: "NAP Rules",
+  tab_facility: "Facility & Fortress",
+  tab_castle: "Castle & Presidency",
+  tab_bia: "Brothers in Arms",
+  tab_transfers: "Transfers",
+  nap7_list_title: "NAP Member Alliances",
+  event_times_title: "Event Times (UTC)",
+  th_alliance: "Alliance",
+  footer_text: "State 2231 · NAP7 Official Rules · All alliances are bound by these rules.",
+
+  nap: `
+    <div class="section">
+      <div class="section-title">Rule #1 — Attacks</div>
+      <p>NAP7 members may not attack any cities or gathering tiles belonging to any other alliance within NAP7.</p>
+      <ul>
+        <li>If you are attacked, share the battle report with your leadership immediately.</li>
+        <li>Attacks made by mutual agreement between both parties are permitted.</li>
+      </ul>
+      <div class="consequence-box">
+        <div class="box-title">Consequences — Gathering Tile Attacks</div>
+        <ul>
+          <li>Leave the same number of troops on the tile so the other party has an equal opportunity to retaliate.</li>
+          <li>If furnace levels differ significantly, a member with a similar furnace level may retaliate by attacking the attacker's gathering tiles instead.</li>
+        </ul>
+      </div>
+      <div class="consequence-box">
+        <div class="box-title">Consequences — City Attacks</div>
+        <ol>
+          <li><strong>1st Offense:</strong> Rally attack without reinforcements. Number of rallies matches the number of city attacks.</li>
+          <li><strong>2nd Offense:</strong> Ban from all NAP alliances, including academies and farm alliances.</li>
+          <li><strong>3rd Offense:</strong> Zeroing.</li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Rule #2 — Farm & Academy Protection</div>
+      <ul>
+        <li>Each alliance is allowed <strong>one (1) farm</strong> and <strong>one (1) academy</strong> under NAP protection.</li>
+        <li>Any additional farms or academies are <strong>not protected</strong> and may be attacked.</li>
+        <li>Alliances must notify NAP whenever a farm or academy is created and indicate its status in the alliance description.</li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Rule #3 — Harassment & Offensive Behavior</div>
+      <div class="rule-title">Prohibited Behavior</div>
+      <p>No insulting, harassing, or targeting any NAP7 member in any chat — personal, alliance, world, or any other channel.</p>
+
+      <div class="rule-title">Definitions</div>
+      <ul>
+        <li><strong>Harassment:</strong> Unwanted behavior causing discomfort, humiliation, or mental distress. Includes threats, insults, discrimination, or attempts to manipulate or control other players.</li>
+        <li><strong>Offensive Behavior:</strong> Rude, insulting, or offensive conduct, including hateful language, online harassment, or sharing disturbing content.</li>
+      </ul>
+
+      <div class="rule-title">Reporting Procedure</div>
+      <ol>
+        <li>Ask the person to stop immediately.</li>
+        <li>If the behavior continues in personal chat, forward the incident to your R4/R5 and the opposing party's R4/R5.</li>
+        <li>If the behavior continues in world chat and others find it offensive, contact your R4/R5 or the opposing R4/R5.</li>
+        <li>Repeated incidents may be escalated to the NAP7 chat.</li>
+        <li>If unresolved, three uninvolved R5s will decide whether the behavior qualifies as harassment and determine the appropriate punishment.</li>
+      </ol>
+
+      <div class="note-box">
+        <div class="box-title">Mutual Respect</div>
+        <ul>
+          <li>Harassment is only considered valid when one party repeatedly offends after being asked to stop.</li>
+          <li>If both parties are engaging in the behavior, neither can claim harassment.</li>
+        </ul>
+      </div>
+
+      <div class="consequence-box">
+        <div class="box-title">Consequences — Individuals</div>
+        <ol>
+          <li><strong>1st Offense:</strong> Apologize and stop. If ignored, 1 week in trial.</li>
+          <li><strong>2nd Offense:</strong> 1 week in trial, no exceptions.</li>
+          <li><strong>3rd Offense:</strong> Banned from NAP7. Continued harassment may result in zeroing.</li>
+        </ol>
+      </div>
+
+      <div class="consequence-box">
+        <div class="box-title">Consequences — Alliances</div>
+        <ul>
+          <li>3 or more members harassing others: Alliance loses fortress/SH for 2 weeks.</li>
+          <li>Continued offenses: 4 weeks.</li>
+          <li>Repeated violations: Alliance banned from NAP7; offending members zeroed.</li>
+        </ul>
+      </div>
+
+      <div class="consequence-box">
+        <div class="box-title">Consequences — R5 Leadership</div>
+        <ol>
+          <li><strong>1st Offense:</strong> 1 week in jail.</li>
+          <li><strong>2nd Offense:</strong> 2 weeks in jail.</li>
+          <li><strong>3rd Offense:</strong> 4 weeks in jail + expulsion from NAP.</li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Rule #4 — Leaving Alliances to Attack NAP Members</div>
+      <p>If a member leaves their alliance intentionally to attack NAP members, all other NAP alliances are required to assist in defense.</p>
+      <div class="consequence-box">
+        <div class="box-title">Consequences — Gathering Tile Attacks</div>
+        <ul>
+          <li>Leave the same number of troops for equal retaliation.</li>
+          <li>Members with similar furnace levels may carry out the retaliation.</li>
+        </ul>
+      </div>
+      <div class="consequence-box">
+        <div class="box-title">Consequences — City Attacks</div>
+        <ol>
+          <li><strong>1st Offense:</strong> Rally attack without reinforcements. Number of rallies = number of city attacks.</li>
+          <li><strong>2nd Offense:</strong> Ban from all NAP alliances.</li>
+          <li><strong>3rd Offense:</strong> Zeroing.</li>
+        </ol>
+      </div>
+      <div class="note-box">
+        <div class="box-title">Note</div>
+        <p>These rules only apply if the alliances involved cannot reach a mutual agreement. If an agreement is reached, NAP respects that decision.</p>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Rule #5 — Dispute Resolution</div>
+      <ul>
+        <li>The top three alliances are required to assist in resolving disputes between alliances.</li>
+        <li>Their decision is final.</li>
+        <li>If one of the top three alliances is directly involved in the dispute, the 4th-place alliance will assist in resolving it instead.</li>
+      </ul>
+      <div class="consequence-box">
+        <div class="box-title">Consequences — Failure to Respect NAP Decisions</div>
+        <ol>
+          <li><strong>1st Offense:</strong> Alliance loses fortress control for two weeks.</li>
+          <li><strong>2nd Offense:</strong> Alliance is removed from NAP.</li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Voting Procedure</div>
+      <p>A majority vote is required for any proposal to pass.</p>
+      <div class="rule-title">Voting Timeline</div>
+      <p>Once a vote is posted in the NAP7 Vote channel, all NAP7 alliances have <strong>24 hours</strong> to cast their vote. If an alliance does not vote within this timeframe, their vote will not affect the outcome.</p>
+    </div>
+  `,
+
+  facility: `
+    <div class="section">
+      <div class="section-title">Facility Rules</div>
+
+      <div class="rule-title">Rule #1 — General Facility Rules</div>
+      <ul>
+        <li>Moving to a farm or academy alliance in order to take over a facility is <strong>not allowed</strong>.</li>
+        <li>Switching alliances to keep or take a facility is <strong>prohibited</strong>.</li>
+        <li>Presidents may not remove opposing alliance members from positions during facility, fortress, or stronghold battles.</li>
+        <li>More than two alliances may compete for the same facility. However, alliances may <strong>not</strong> team up specifically to prevent another alliance from obtaining a facility.</li>
+        <li>Do not take a facility if your alliance already holds the same buff at the same level. <em>Example: If you already hold a Level 4 Defense facility, you may not claim another Level 4 Defense facility.</em></li>
+        <li>For the State vs. State event, alliance S31 will receive one Level 4 Defense and one Level 4 Attack facility. The counter-rally alliance will receive the same.</li>
+        <li>Using banners to block another alliance from connecting to a facility is <strong>prohibited</strong>. Refusing to move banners when asked will result in penalties.</li>
+        <li>You may not ask another alliance to attack a facility on your behalf, nor offer to attack a facility for another alliance with the intent of reducing the defense timer.</li>
+        <li>If an alliance attacks a facility without intending to claim it, approval is required from all NAP8 alliances connected to that facility. This rule only applies when the attacking alliance already owns the same facility type and level. If the attacking alliance wins, they must transfer the facility to another connected alliance.</li>
+      </ul>
+
+      <div class="consequence-box">
+        <div class="box-title">Consequences</div>
+        <p>An alliance that breaks one of these rules will receive a <strong>one-week warning</strong>, during which they cannot compete for that facility. If the same alliance breaks the rule again on the same facility, they will be forced to remove their banner from it.</p>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Fortress & Stronghold Allocation</div>
+
+      <div class="rule-title">Allocation by SVS Prep Score</div>
+      <ul>
+        <li><strong>Top 4 Alliances:</strong> Each receives 1 Stronghold (SH) + 2 Fortresses (F)</li>
+        <li><strong>Alliances Ranked 5–7:</strong> Each receives 1 Fortress (F)</li>
+        <li><strong>12th Fortress:</strong> Free-for-All (FFA)</li>
+      </ul>
+
+      <div class="note-box">
+        <div class="box-title">Notes</div>
+        <ul>
+          <li>Alliances must claim their assigned fortresses and strongholds according to the rotation schedule.</li>
+          <li>The Free-for-All Fortress may be contested by any alliance during the FFA period.</li>
+          <li>SVS Prep Score determines allocation — stronger preparation means a stronger position.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Fortress & Stronghold Rules</div>
+      <ul>
+        <li><strong>Wrong fortress/stronghold claimed:</strong> The offending alliance will have its own fortress and stronghold transferred to the affected alliance for two weeks (two turns).</li>
+        <li><strong>Seasonal FFA Fortresses:</strong> The first week of every season (every 8 weeks), all extra fortresses will be Free-for-All.</li>
+        <li><strong>FFA Eligibility:</strong> Any alliance may sign up for FFA fortresses, including alliances not under NAP protection.</li>
+        <li><strong>Automatic Sign-Ups:</strong> If an alliance is automatically signed up for a fortress or stronghold but is not scheduled to claim it that week, members may send single-troop marches after the first claim rewards are collected in order to receive a puzzle piece point.</li>
+      </ul>
+    </div>
+  `,
+
+  castle: `
+    <div class="section">
+      <div class="section-title">Domestic Castle & Turrets Rules</div>
+
+      <div class="rule-title">Battle Schedule</div>
+      <div class="schedule-block">
+        <div class="schedule-item"><span>Castle battle begins</span><span class="schedule-time">12:00 UTC</span></div>
+        <div class="schedule-item"><span>Teleportation to castle allowed from</span><span class="schedule-time">11:00 UTC</span></div>
+        <div class="schedule-item"><span>Free-for-All combat</span><span class="schedule-time">12:00 – 14:00 UTC</span></div>
+        <div class="schedule-item"><span>Next NAP alliance occupies castle (2.5 hrs)</span><span class="schedule-time">14:00 UTC</span></div>
+      </div>
+
+      <div class="note-box">
+        <div class="box-title">During the 2.5-Hour Presidency Slot</div>
+        <ul>
+          <li>Rallies on the castle are <strong>prohibited</strong>.</li>
+          <li>Only solo attacks are allowed.</li>
+          <li>After the 2.5-hour presidency, the castle returns to Free-for-All.</li>
+          <li>The presidency time slot can be adjusted to fit the alliance's availability.</li>
+        </ul>
+      </div>
+
+      <div class="rule-title">Castle Zone Restrictions</div>
+      <ul>
+        <li>Do not attack or scout any cities in the area surrounding the castle.</li>
+        <li>Gem Buffs (20%) are prohibited during the castle battle, with the exception of an assigned turret.</li>
+      </ul>
+
+      <div class="consequence-box">
+        <div class="box-title">Consequences — Rallying & Ejecting the Presidency Alliance</div>
+        <ol>
+          <li><strong>1st Offense:</strong> Warning.</li>
+          <li><strong>3+ Offenses:</strong> Barred from the remainder of the SFC battle.</li>
+          <li><strong>Continued Violations:</strong> Presidential punishments for 1 week.</li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Presidency Rotation</div>
+      <ul>
+        <li><strong>Domestic Sun Fire Castle:</strong> Presidency rotates among alliances ranked <strong>4–7</strong> by SVS Prep Score.</li>
+        <li><strong>SVS Sun Fire Castle (Supreme Presidency):</strong> Presidency rotates among alliances ranked <strong>1–3</strong> by SVS Prep Score.</li>
+      </ul>
+
+      <div class="rule-title">Rotation Cycle</div>
+      <ul>
+        <li>The rotation cycle depends on the number of alliances in NAP.</li>
+        <li>A cycle lasts until each eligible alliance has held the presidency at least once.</li>
+        <li>If an alliance declines the presidency, it will be passed to the next alliance in rotation.</li>
+        <li>The rotation order is set at the beginning of each cycle, proceeding from the highest SVS Prep Score to the lowest.</li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Presidency Rules & Guidelines</div>
+
+      <div class="rule-title">Rule No. 1 — Gem Conversion</div>
+      <p>Converting authority into gems is <strong>prohibited</strong> unless the total authority exceeds <strong>1,000,000</strong>.</p>
+
+      <div class="rule-title">SVS Preparation Schedule</div>
+      <p>The president must establish a schedule ensuring all buffs are ready for Week 2 SVS Prep.</p>
+
+      <div class="schedule-block">
+        <h4>Week 1</h4>
+        <div class="schedule-item"><span>Sunday 23:30 UTC</span><span class="schedule-time">Mercantilism — Construction Buff</span></div>
+        <div class="schedule-item"><span>Monday 23:30 UTC</span><span class="schedule-time">Research Advancement — Research Buff</span></div>
+        <div class="schedule-item"><span>Wednesday 23:30 UTC</span><span class="schedule-time">Mobilize — Troop Training Buff</span></div>
+      </div>
+
+      <div class="schedule-block">
+        <h4>Week 2</h4>
+        <div class="schedule-item"><span>Monday 00:00 UTC</span><span class="schedule-time">Mercantilism — Construction Buff</span></div>
+        <div class="schedule-item"><span>Tuesday 00:00 UTC</span><span class="schedule-time">Research Advancement — Research Buff</span></div>
+        <div class="schedule-item"><span>Thursday 00:00 UTC</span><span class="schedule-time">Mobilize — Troop Training Buff</span></div>
+      </div>
+    </div>
+  `,
+
+  bia: `
+    <div class="section">
+      <div class="section-title">Brothers in Arms Rules</div>
+
+      <div class="rule-title">Resource Tiles</div>
+      <p>Attacks on all resource tiles are <strong>allowed</strong>.</p>
+
+      <div class="rule-title">NAP City Restrictions</div>
+      <ul>
+        <li>Attacks, scouts, and rallies on NAP cities are <strong>prohibited</strong>, unless those cities are located outside alliance territory. NAP protection does not apply outside your alliance zone.</li>
+        <li>Both your city and the NAP city must be outside alliance territory to scout, attack, or rally.</li>
+        <li>Note: You will be open to counterattacks when engaging outside alliance territory.</li>
+      </ul>
+
+      <div class="rule-title">Zeroing Cities</div>
+      <p>Zeroing other players' cities is <strong>prohibited</strong>. Maximum of <strong>2 attacks</strong> per city that is not burning.</p>
+
+      <div class="rule-title">Prohibited Attack Conditions</div>
+      <ul>
+        <li>Attacking cities that are touching alliance territory — even partially — is prohibited.</li>
+        <li>Attacks are also prohibited during fortress, facility, or castle battles.</li>
+      </ul>
+
+      <div class="rule-title">Rallying NAP7 Members</div>
+      <ul>
+        <li>Both the rally leader and the NAP7 member being rallied must be outside alliance banners.</li>
+        <li>Players joining the rally do not need to be outside alliance territory.</li>
+        <li>Reinforcements are allowed for both the rally leader and the rallied player.</li>
+        <li>Players sending reinforcements do not need to be outside alliance territory.</li>
+      </ul>
+
+      <div class="rule-title">Non-NAP Alliances</div>
+      <p>Alliances not under NAP protection can be attacked at any time. Their banners and HQs may also be burned at any time.</p>
+
+      <div class="consequence-box">
+        <div class="box-title">Consequences</div>
+        <ol>
+          <li><strong>1st Offense:</strong> Warning, presidential punishment + equal retaliation (only after informing your leadership).</li>
+          <li><strong>2nd Offense:</strong> Equal retaliation, removal from the alliance, and ban from all NAP alliances.</li>
+          <li><strong>3rd Offense:</strong> Zeroing.</li>
+        </ol>
+      </div>
+    </div>
+  `,
+
+  transfers: `
+    <div class="section">
+      <div class="section-title">Recruitment Questions</div>
+      <p>All transfer candidates will be asked the following questions:</p>
+      <ol>
+        <li>What is motivating you to transfer to a new state?</li>
+        <li>Do you prioritize the success of your alliance, the state overall, or both?</li>
+        <li>Do you have any concerns or questions about transferring?</li>
+        <li>What are you hoping to find in your next state?</li>
+        <li>Do you and your group have sufficient transfer passes available?</li>
+        <li>Please share the power and furnace levels of your members.</li>
+        <li>Are you interested in creating a new alliance or joining an existing one?</li>
+        <li>How active are you and your members on a regular basis?</li>
+        <li>How do your members typically perform during SVS preparation?</li>
+      </ol>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Transfer Procedure & Guidelines</div>
+
+      <div class="rule-title">General Process</div>
+      <ul>
+        <li>All transfer requests will be listed and voted on before Phase 2 begins.</li>
+        <li>For smaller transfers (fewer than 20 people), no additional votes are required after the initial invitation vote.</li>
+        <li>Candidates will be interviewed, given a second review, and their information will be shared with NAP.</li>
+      </ul>
+
+      <div class="rule-title">Communication Requirements</div>
+      <ul>
+        <li>New groups and players are encouraged to join Discord for immediate communication with NAP7.</li>
+        <li>If Discord is unavailable, an in-game chat group can be created in State 2231.</li>
+      </ul>
+
+      <div class="rule-title">Special Invitations (SI)</div>
+      <ul>
+        <li>One SI should be used per transfer if needed, to avoid wasting it.</li>
+        <li>If no player requires an SI, it may be saved for open transfer or for friends requesting it.</li>
+        <li>Aim to maintain 3 SIs per transfer unless used for players who specifically require them.</li>
+      </ul>
+
+      <div class="rule-title">Player Eligibility</div>
+      <ul>
+        <li>No invites are sent to players below FC5. They may join during Phase 3 open transfer.</li>
+        <li>If there will be fewer than 35 total transfers, invites may be extended to players below FC5 on a first-come, first-serve basis.</li>
+      </ul>
+
+      <div class="rule-title">Groups & High-Power Players</div>
+      <ul>
+        <li>Groups larger than 5 or high-power players require full vetting: screening questions, activity/power checks, and Discord or alternative communication.</li>
+        <li>Small groups (5 or fewer) may receive discretionary vetting.</li>
+        <li>Single players or groups of up to 3 referred by trusted members may receive reasonable exceptions.</li>
+        <li>Groups of 4 or more, or extremely powerful players, must always be fully vetted.</li>
+      </ul>
+
+      <div class="rule-title">Priority & Timing</div>
+      <ul>
+        <li>Alliances with the most available space are prioritized first.</li>
+        <li>Friends of current members receive slight preference over entirely new groups.</li>
+        <li>24 hours before Phase 2 ends, invites are sent to Phase 3 candidates.</li>
+      </ul>
+
+      <div class="rule-title">New Alliance Requests</div>
+      <ul>
+        <li>A vote will determine whether to allow a new alliance or integrate the group into an existing one.</li>
+        <li>If a transferred group wants to form a new alliance but the vote was "No," all alternatives must be explored first.</li>
+        <li>If no solutions are possible, the group may form a new NAP alliance.</li>
+      </ul>
+    </div>
+  `
+},
+
+// ============================================================
+// KOREAN
+// ============================================================
+ko: {
+  subtitle: "공식 연맹 규칙",
+  tab_overview: "개요 및 이벤트",
+  tab_nap: "NAP 규칙",
+  tab_facility: "시설 및 요새",
+  tab_castle: "성 및 의장",
+  tab_bia: "동맹군 규칙",
+  tab_transfers: "이주 안내",
+  nap7_list_title: "NAP7 소속 연맹",
+  event_times_title: "이벤트 시간 (UTC 기준)",
+  th_alliance: "연맹",
+  footer_text: "2231 스테이트 · NAP7 공식 규칙 · 모든 연맹은 이 규칙을 준수해야 합니다.",
+
+  nap: `
+    <div class="section">
+      <div class="section-title">규칙 #1 — 공격 금지</div>
+      <p>NAP7 소속 연맹원은 NAP7 내 다른 연맹의 도시나 채집 타일을 공격할 수 없습니다.</p>
+      <ul>
+        <li>공격을 받은 경우, 즉시 전투 보고서를 지도부에 공유하세요.</li>
+        <li>양측이 사전에 합의한 경우에는 공격이 허용됩니다.</li>
+      </ul>
+      <div class="consequence-box">
+        <div class="box-title">제재 — 채집 타일 공격</div>
+        <ul>
+          <li>상대방이 동등하게 반격할 수 있도록 타일에 같은 수의 병력을 남겨두어야 합니다.</li>
+          <li>화로 레벨 차이가 클 경우, 비슷한 화로 레벨을 가진 연맹원이 공격자의 채집 타일을 대신 공격하는 방식으로 보복할 수 있습니다.</li>
+        </ul>
+      </div>
+      <div class="consequence-box">
+        <div class="box-title">제재 — 도시 공격</div>
+        <ol>
+          <li><strong>1차 위반:</strong> 지원 없이 집결 공격. 집결 횟수는 도시 공격 횟수와 동일하게 적용됩니다.</li>
+          <li><strong>2차 위반:</strong> 아카데미 및 팜 연맹을 포함한 모든 NAP 연맹에서 추방.</li>
+          <li><strong>3차 위반:</strong> 제로잉(병력 전멸).</li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">규칙 #2 — 팜 및 아카데미 보호</div>
+      <ul>
+        <li>각 연맹은 NAP 보호 아래 <strong>팜 1개</strong>와 <strong>아카데미 1개</strong>를 운영할 수 있습니다.</li>
+        <li>추가로 운영하는 팜이나 아카데미는 <strong>보호 대상이 아니며</strong> 공격받을 수 있습니다.</li>
+        <li>팜이나 아카데미를 새로 만들 경우, NAP에 반드시 알리고 연맹 설명란에 해당 상태를 표기해야 합니다.</li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <div class="section-title">규칙 #3 — 괴롭힘 및 불량 행동 금지</div>
+      <div class="rule-title">금지 행동</div>
+      <p>개인 채팅, 연맹 채팅, 월드 채팅 등 모든 채널에서 NAP7 구성원을 모욕하거나 괴롭히거나 표적 삼는 행동은 금지됩니다.</p>
+      <div class="rule-title">용어 정의</div>
+      <ul>
+        <li><strong>괴롭힘:</strong> 상대방에게 불쾌감, 굴욕감, 심리적 고통을 유발하는 원치 않는 행동. 위협, 모욕, 차별, 다른 플레이어를 조종하거나 통제하려는 시도를 포함합니다.</li>
+        <li><strong>불량 행동:</strong> 혐오 발언, 온라인 괴롭힘, 불쾌한 콘텐츠 공유 등 무례하거나 공격적인 행동.</li>
+      </ul>
+      <div class="rule-title">신고 절차</div>
+      <ol>
+        <li>즉시 행동을 멈추라고 요청하세요.</li>
+        <li>개인 채팅에서 계속될 경우, 본인 연맹의 R4/R5 및 상대 연맹의 R4/R5에게 보고하세요.</li>
+        <li>월드 채팅에서 계속되며 다른 이들이 불쾌함을 느끼는 경우, 본인 또는 상대 연맹의 R4/R5에게 알리세요.</li>
+        <li>반복적인 사건은 NAP7 채팅으로 공식 제기할 수 있습니다.</li>
+        <li>해결되지 않으면, 무관한 R5 세 명이 괴롭힘 여부를 판단하고 처벌을 결정합니다.</li>
+      </ol>
+      <div class="note-box">
+        <div class="box-title">상호 존중 원칙</div>
+        <ul>
+          <li>괴롭힘은 한쪽 당사자가 중단 요청을 받은 후에도 반복적으로 문제 행동을 지속할 때만 인정됩니다.</li>
+          <li>양측 모두 해당 행동에 참여하고 있는 경우, 어느 쪽도 괴롭힘 피해를 주장할 수 없습니다.</li>
+        </ul>
+      </div>
+      <div class="consequence-box">
+        <div class="box-title">제재 — 개인</div>
+        <ol>
+          <li><strong>1차 위반:</strong> 사과 후 즉시 중단. 무시할 경우 1주 시험 연맹 배치.</li>
+          <li><strong>2차 위반:</strong> 예외 없이 1주 시험 연맹 배치.</li>
+          <li><strong>3차 위반:</strong> NAP7에서 영구 추방. 계속되는 괴롭힘은 제로잉으로 이어질 수 있습니다.</li>
+        </ol>
+      </div>
+      <div class="consequence-box">
+        <div class="box-title">제재 — 연맹</div>
+        <ul>
+          <li>3명 이상이 괴롭힘에 가담한 경우: 해당 연맹은 2주간 요새/SH를 박탈당합니다.</li>
+          <li>계속 위반할 경우: 4주로 연장됩니다.</li>
+          <li>반복 위반: 연맹이 NAP7에서 추방되며, 해당 연맹원들은 제로잉됩니다.</li>
+        </ul>
+      </div>
+      <div class="consequence-box">
+        <div class="box-title">제재 — R5 지도부</div>
+        <ol>
+          <li><strong>1차 위반:</strong> 1주 감금.</li>
+          <li><strong>2차 위반:</strong> 2주 감금.</li>
+          <li><strong>3차 위반:</strong> 4주 감금 + NAP 추방.</li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">규칙 #4 — 연맹 이탈 후 NAP 회원 공격 금지</div>
+      <p>NAP 회원을 공격할 목적으로 의도적으로 연맹을 탈퇴한 경우, 다른 모든 NAP 연맹은 피해 연맹의 방어를 지원해야 합니다.</p>
+      <div class="consequence-box">
+        <div class="box-title">제재 — 채집 타일 공격</div>
+        <ul>
+          <li>동등한 반격이 가능하도록 같은 수의 병력을 남겨두어야 합니다.</li>
+          <li>비슷한 화로 레벨을 가진 연맹원이 보복 공격을 대행할 수 있습니다.</li>
+        </ul>
+      </div>
+      <div class="consequence-box">
+        <div class="box-title">제재 — 도시 공격</div>
+        <ol>
+          <li><strong>1차 위반:</strong> 지원 없이 집결 공격. 집결 횟수 = 도시 공격 횟수.</li>
+          <li><strong>2차 위반:</strong> 모든 NAP 연맹에서 추방.</li>
+          <li><strong>3차 위반:</strong> 제로잉.</li>
+        </ol>
+      </div>
+      <div class="note-box">
+        <div class="box-title">참고</div>
+        <p>이 규칙은 관련 연맹들이 서로 합의에 이르지 못한 경우에만 적용됩니다. 합의가 이루어진 경우 NAP은 해당 결정을 존중합니다.</p>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">규칙 #5 — 분쟁 해결</div>
+      <ul>
+        <li>상위 3개 연맹은 연맹 간 분쟁 해결에 반드시 참여해야 합니다.</li>
+        <li>해당 연맹들의 결정은 최종적이며 번복될 수 없습니다.</li>
+        <li>상위 3개 연맹 중 하나가 분쟁 당사자인 경우, 4위 연맹이 대신 조정에 참여합니다.</li>
+      </ul>
+      <div class="consequence-box">
+        <div class="box-title">제재 — NAP 결정 불복</div>
+        <ol>
+          <li><strong>1차 위반:</strong> 해당 연맹은 2주간 요새 점령 권한을 박탈당합니다.</li>
+          <li><strong>2차 위반:</strong> NAP에서 추방됩니다.</li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">투표 절차</div>
+      <p>모든 안건은 과반수 찬성으로 통과됩니다.</p>
+      <div class="rule-title">투표 기간</div>
+      <p>NAP7 투표 채널에 안건이 올라오면, 모든 NAP7 연맹은 <strong>24시간 이내</strong>에 투표해야 합니다. 기간 내에 투표하지 않은 연맹의 의견은 결과에 반영되지 않습니다.</p>
+    </div>
+  `,
+
+  facility: `
+    <div class="section">
+      <div class="section-title">시설 규칙</div>
+      <div class="rule-title">규칙 #1 — 일반 시설 규칙</div>
+      <ul>
+        <li>시설을 점령할 목적으로 팜 또는 아카데미 연맹으로 이동하는 행위는 <strong>금지</strong>됩니다.</li>
+        <li>시설을 유지하거나 빼앗기 위해 연맹을 바꾸는 행위는 <strong>금지</strong>됩니다.</li>
+        <li>의장은 시설, 요새, 또는 거점 전투 중에 상대 연맹 구성원을 직위에서 해제할 수 없습니다.</li>
+        <li>두 개 이상의 연맹이 같은 시설을 두고 경쟁할 수 있습니다. 단, 특정 연맹이 시설을 얻지 못하도록 연합하는 행위는 <strong>금지</strong>됩니다.</li>
+        <li>이미 같은 등급의 동일한 버프 시설을 보유하고 있다면, 그 시설을 추가로 점령할 수 없습니다. <em>예: 4레벨 방어 시설을 이미 보유한 경우, 다른 4레벨 방어 시설을 점령할 수 없습니다.</em></li>
+        <li>스테이트 대전 이벤트에서 S31 연맹은 4레벨 방어 시설 1개와 4레벨 공격 시설 1개를 배정받습니다. 카운터 집결 연맹도 동일하게 배정받습니다.</li>
+        <li>배너를 이용해 다른 연맹이 시설에 연결되지 못하도록 막는 행위는 <strong>금지</strong>됩니다. 요청을 받고도 배너를 이동하지 않으면 제재를 받습니다.</li>
+        <li>다른 연맹에 시설 공격을 대신 요청하거나, 방어 타이머를 줄일 목적으로 시설 공격을 제안하는 행위는 금지됩니다.</li>
+        <li>시설을 점령할 의도 없이 공격하는 경우, 해당 시설에 연결된 모든 NAP8 연맹의 승인이 필요합니다. 이 규칙은 공격 연맹이 이미 같은 유형과 등급의 시설을 보유한 경우에만 적용됩니다. 공격 연맹이 시설을 획득하면 다른 연결 연맹에 이전해야 합니다.</li>
+      </ul>
+      <div class="consequence-box">
+        <div class="box-title">제재</div>
+        <p>규칙을 위반한 연맹은 <strong>1주 경고</strong>를 받으며, 그 기간 동안 해당 시설 쟁탈전에 참여할 수 없습니다. 같은 시설에서 같은 규칙을 또다시 어길 경우, 해당 시설에서 배너를 강제 철거해야 합니다.</p>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">요새 및 거점 배정</div>
+      <div class="rule-title">SVS 준비 점수 기준 배정</div>
+      <ul>
+        <li><strong>상위 4개 연맹:</strong> 각각 거점(SH) 1개 + 요새(F) 2개</li>
+        <li><strong>5~7위 연맹:</strong> 각각 요새(F) 1개</li>
+        <li><strong>12번째 요새:</strong> 자유 쟁탈(FFA)</li>
+      </ul>
+      <div class="note-box">
+        <div class="box-title">참고사항</div>
+        <ul>
+          <li>연맹은 순환 일정에 따라 배정된 요새와 거점을 반드시 점령해야 합니다.</li>
+          <li>자유 쟁탈 요새는 FFA 기간 중 어떤 연맹이든 경쟁할 수 있습니다.</li>
+          <li>SVS 준비 점수가 높을수록 유리한 배정을 받습니다.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">요새 및 거점 세부 규칙</div>
+      <ul>
+        <li><strong>잘못된 요새/거점 점령:</strong> 위반 연맹의 요새와 거점이 피해 연맹에게 2주(2턴)간 이전됩니다.</li>
+        <li><strong>시즌 FFA 요새:</strong> 매 시즌 첫째 주(매 8주마다)에는 모든 추가 요새가 자유 쟁탈 상태가 됩니다.</li>
+        <li><strong>FFA 참여 자격:</strong> NAP 보호를 받지 않는 연맹을 포함한 모든 연맹이 FFA 요새에 참여할 수 있습니다.</li>
+        <li><strong>자동 배정:</strong> 자동으로 배정된 요새나 거점을 해당 주에 점령할 예정이 없는 경우, 첫 점령 보상 수령 후 병사 1명 행군을 보내 퍼즐 조각 포인트를 받을 수 있습니다.</li>
+      </ul>
+    </div>
+  `,
+
+  castle: `
+    <div class="section">
+      <div class="section-title">거점 성 및 포탑 규칙</div>
+      <div class="rule-title">전투 일정</div>
+      <div class="schedule-block">
+        <div class="schedule-item"><span>성 전투 시작</span><span class="schedule-time">12:00 UTC</span></div>
+        <div class="schedule-item"><span>성 텔레포트 가능 시간</span><span class="schedule-time">11:00 UTC부터</span></div>
+        <div class="schedule-item"><span>자유 전투(FFA)</span><span class="schedule-time">12:00 – 14:00 UTC</span></div>
+        <div class="schedule-item"><span>다음 NAP 연맹 성 점령 (2.5시간)</span><span class="schedule-time">14:00 UTC</span></div>
+      </div>
+      <div class="note-box">
+        <div class="box-title">2.5시간 의장 점령 구간 규칙</div>
+        <ul>
+          <li>해당 시간 동안 성에 대한 집결 공격은 <strong>금지</strong>됩니다.</li>
+          <li>단독 공격만 허용됩니다.</li>
+          <li>2.5시간 의장 구간이 끝나면 성은 다시 자유 전투 상태로 돌아갑니다.</li>
+          <li>의장 점령 시간은 해당 연맹의 상황에 따라 조정될 수 있습니다.</li>
+        </ul>
+      </div>
+      <div class="rule-title">성 주변 구역 제한</div>
+      <ul>
+        <li>성 주변의 도시를 공격하거나 정찰하는 행위는 금지됩니다.</li>
+        <li>성 전투 중 젬 버프(20%)는 금지됩니다. 단, 배정된 포탑은 예외입니다.</li>
+      </ul>
+      <div class="consequence-box">
+        <div class="box-title">제재 — 의장 배정 연맹 집결 및 축출</div>
+        <ol>
+          <li><strong>1차 위반:</strong> 경고.</li>
+          <li><strong>3회 이상 위반:</strong> 해당 SFC 전투 참여 자격 박탈.</li>
+          <li><strong>계속 위반:</strong> 1주간 의장 처벌 적용.</li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">의장 순환 제도</div>
+      <ul>
+        <li><strong>국내 선파이어 성:</strong> SVS 준비 점수 <strong>4~7위</strong> 연맹들이 순번제로 의장직을 맡습니다.</li>
+        <li><strong>SVS 선파이어 성 (최고 의장):</strong> SVS 준비 점수 <strong>1~3위</strong> 연맹들이 순번제로 의장직을 맡습니다.</li>
+      </ul>
+      <div class="rule-title">순환 주기</div>
+      <ul>
+        <li>순환 주기는 NAP 소속 연맹 수에 따라 달라집니다.</li>
+        <li>모든 자격 연맹이 최소 한 번씩 의장을 맡으면 한 사이클이 완료됩니다.</li>
+        <li>의장직을 거절한 연맹의 차례는 다음 연맹으로 넘어갑니다.</li>
+        <li>순환 순서는 각 사이클 시작 시 SVS 준비 점수 높은 순서대로 정해집니다.</li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <div class="section-title">의장 규칙 및 지침</div>
+      <div class="rule-title">규칙 제1조 — 젬 변환</div>
+      <p>총 권한이 <strong>1,000,000</strong>을 초과하지 않는 한, 권한을 젬으로 변환하는 행위는 <strong>금지</strong>됩니다.</p>
+      <div class="rule-title">SVS 준비 기간 버프 일정</div>
+      <p>의장은 SVS 2주차 준비에 맞춰 모든 버프가 준비될 수 있도록 일정을 수립해야 합니다.</p>
+      <div class="schedule-block">
+        <h4>1주차</h4>
+        <div class="schedule-item"><span>일요일 23:30 UTC</span><span class="schedule-time">상업주의 — 건설 버프</span></div>
+        <div class="schedule-item"><span>월요일 23:30 UTC</span><span class="schedule-time">연구 발전 — 연구 버프</span></div>
+        <div class="schedule-item"><span>수요일 23:30 UTC</span><span class="schedule-time">동원령 — 병력 훈련 버프</span></div>
+      </div>
+      <div class="schedule-block">
+        <h4>2주차</h4>
+        <div class="schedule-item"><span>월요일 00:00 UTC</span><span class="schedule-time">상업주의 — 건설 버프</span></div>
+        <div class="schedule-item"><span>화요일 00:00 UTC</span><span class="schedule-time">연구 발전 — 연구 버프</span></div>
+        <div class="schedule-item"><span>목요일 00:00 UTC</span><span class="schedule-time">동원령 — 병력 훈련 버프</span></div>
+      </div>
+    </div>
+  `,
+
+  bia: `
+    <div class="section">
+      <div class="section-title">동맹군(BIA) 규칙</div>
+      <div class="rule-title">자원 타일</div>
+      <p>모든 자원 타일 공격은 <strong>허용</strong>됩니다.</p>
+      <div class="rule-title">NAP 도시 공격 제한</div>
+      <ul>
+        <li>NAP 도시에 대한 공격, 정찰, 집결은 <strong>금지</strong>됩니다. 단, 해당 도시가 연맹 영역 외부에 있는 경우는 예외입니다. 연맹 구역 밖에서는 NAP 보호가 적용되지 않습니다.</li>
+        <li>공격, 정찰, 집결을 하려면 본인의 도시와 상대 NAP 도시 모두 연맹 영역 밖에 위치해야 합니다.</li>
+        <li>참고: 연맹 영역 밖에서 행동할 경우 반격에 노출될 수 있습니다.</li>
+      </ul>
+      <div class="rule-title">도시 제로잉 금지</div>
+      <p>다른 플레이어의 도시를 제로잉하는 행위는 <strong>금지</strong>됩니다. 불타지 않는 도시에 대한 공격은 최대 <strong>2회</strong>로 제한됩니다.</p>
+      <div class="rule-title">특정 상황에서의 공격 금지</div>
+      <ul>
+        <li>연맹 영역과 일부라도 맞닿아 있는 도시를 공격하는 행위는 금지됩니다.</li>
+        <li>요새, 시설, 또는 성 전투 중에는 공격이 금지됩니다.</li>
+      </ul>
+      <div class="rule-title">NAP7 구성원 집결</div>
+      <ul>
+        <li>집결을 주도하는 플레이어와 집결 대상 NAP7 구성원 모두 연맹 배너 밖에 위치해야 합니다.</li>
+        <li>집결에 참여하는 플레이어는 연맹 영역 밖에 있을 필요가 없습니다.</li>
+        <li>집결 주도자와 집결 대상자 모두 지원군을 받을 수 있습니다.</li>
+        <li>지원군을 보내는 플레이어는 연맹 영역 밖에 있을 필요가 없습니다.</li>
+      </ul>
+      <div class="rule-title">NAP 비가입 연맹</div>
+      <p>NAP 보호를 받지 않는 연맹은 언제든지 공격할 수 있습니다. 해당 연맹의 배너와 본부도 언제든 소각할 수 있습니다.</p>
+      <div class="consequence-box">
+        <div class="box-title">제재</div>
+        <ol>
+          <li><strong>1차 위반:</strong> 경고, 의장 처벌 + 동등 보복 (반드시 지도부에 보고 후 진행).</li>
+          <li><strong>2차 위반:</strong> 동등 보복, 연맹 탈퇴 처리 및 모든 NAP 연맹 추방.</li>
+          <li><strong>3차 위반:</strong> 제로잉.</li>
+        </ol>
+      </div>
+    </div>
+  `,
+
+  transfers: `
+    <div class="section">
+      <div class="section-title">이주 심사 질문</div>
+      <p>이주를 신청하는 모든 후보자는 다음 질문에 답해야 합니다:</p>
+      <ol>
+        <li>새로운 스테이트로 이주하려는 이유가 무엇인가요?</li>
+        <li>연맹의 성공을 우선시하나요, 스테이트 전체의 성공을 우선시하나요, 아니면 둘 다인가요?</li>
+        <li>이주에 대해 우려되는 점이나 질문이 있나요?</li>
+        <li>새로운 스테이트에서 무엇을 기대하고 있나요?</li>
+        <li>본인과 그룹에 이주 패스가 충분히 있나요?</li>
+        <li>구성원들의 전투력과 화로 레벨을 공유해 주세요.</li>
+        <li>새로운 연맹을 창설하고 싶으신가요, 아니면 기존 연맹에 합류하고 싶으신가요?</li>
+        <li>본인과 구성원들은 평소 얼마나 활발하게 활동하나요?</li>
+        <li>SVS 준비 기간 동안 구성원들의 참여도는 어떤 편인가요?</li>
+      </ol>
+    </div>
+
+    <div class="section">
+      <div class="section-title">이주 절차 및 안내</div>
+      <div class="rule-title">일반 절차</div>
+      <ul>
+        <li>모든 이주 신청은 2단계 시작 전에 목록화되고 투표를 통해 결정됩니다.</li>
+        <li>소규모 이주(20명 미만)의 경우, 최초 초대 투표 이후 추가 투표는 필요하지 않습니다.</li>
+        <li>후보자는 인터뷰를 거치고 2차 검토를 받으며, 관련 정보가 NAP 전체에 공유됩니다.</li>
+      </ul>
+      <div class="rule-title">소통 요건</div>
+      <ul>
+        <li>새로운 그룹과 플레이어는 NAP7과 원활한 소통을 위해 디스코드에 참여하는 것을 권장합니다.</li>
+        <li>디스코드 사용이 어려운 경우, 2231 스테이트 내 게임 채팅 그룹을 별도로 만들 수 있습니다.</li>
+      </ul>
+      <div class="rule-title">특별 초대장 (SI)</div>
+      <ul>
+        <li>이주 1건당 필요 시 SI 1개를 사용하며, 낭비되지 않도록 주의합니다.</li>
+        <li>SI가 필요한 플레이어가 없다면, 공개 이주 또는 지인 초대를 위해 보관해 둘 수 있습니다.</li>
+        <li>SI를 특별히 필요로 하는 플레이어에게 사용하지 않는 한, 이주당 SI 3개 유지를 권장합니다.</li>
+      </ul>
+      <div class="rule-title">참여 자격</div>
+      <ul>
+        <li>FC5 미만 플레이어에게는 초대장을 발송하지 않습니다. 해당 플레이어는 3단계 공개 이주 기간에 합류할 수 있습니다.</li>
+        <li>총 이주 인원이 35명 미만일 경우, FC5 미만 플레이어에게도 선착순으로 초대장이 발송될 수 있습니다.</li>
+      </ul>
+      <div class="rule-title">그룹 및 고전력 플레이어</div>
+      <ul>
+        <li>5명 초과 그룹이나 고전력 플레이어는 심사 질문, 활동도/전투력 확인, 디스코드 또는 대체 소통 수단을 포함한 전면 심사를 받아야 합니다.</li>
+        <li>소규모 그룹(5명 이하)은 재량에 따라 간소화된 심사를 받을 수 있습니다.</li>
+        <li>신뢰할 수 있는 기존 구성원의 추천을 받은 개인 또는 3인 이하 그룹은 예외 적용을 받을 수 있습니다.</li>
+        <li>4명 이상 그룹 또는 매우 강력한 플레이어는 반드시 전면 심사를 받아야 합니다.</li>
+      </ul>
+      <div class="rule-title">우선순위 및 일정</div>
+      <ul>
+        <li>여유 자리가 가장 많은 연맹이 우선 배정됩니다.</li>
+        <li>기존 구성원의 지인은 완전히 새로운 그룹보다 약간의 우선권을 가집니다.</li>
+        <li>2단계 종료 24시간 전에 3단계 후보자들에게 초대장이 발송됩니다.</li>
+      </ul>
+      <div class="rule-title">신규 연맹 창설 요청</div>
+      <ul>
+        <li>신규 연맹 허용 여부는 투표로 결정됩니다. 부결될 경우, 기존 연맹 합류가 먼저 검토됩니다.</li>
+        <li>이주한 그룹이 새로운 연맹 창설을 원하지만 투표가 "반대"로 결정된 경우, 가능한 모든 대안을 먼저 모색해야 합니다.</li>
+        <li>다른 해결책이 없을 경우, 해당 그룹은 새로운 NAP 연맹을 결성할 수 있습니다.</li>
+      </ul>
+    </div>
+  `
+},
+
+// ============================================================
+// TURKISH
+// ============================================================
+tr: {
+  subtitle: "Resmi İttifak Kuralları",
+  tab_overview: "Genel Bakış & Etkinlikler",
+  tab_nap: "NAP Kuralları",
+  tab_facility: "Tesis & Kale",
+  tab_castle: "Sur & Başkanlık",
+  tab_bia: "Silah Arkadaşları",
+  tab_transfers: "Transfer",
+  nap7_list_title: "NAP7 İttifak Üyeleri",
+  event_times_title: "Etkinlik Saatleri (UTC)",
+  th_alliance: "İttifak",
+  footer_text: "Eyalet 2231 · NAP7 Resmi Kuralları · Tüm ittifaklar bu kurallara uymakla yükümlüdür.",
+
+  nap: `
+    <div class="section">
+      <div class="section-title">Kural #1 — Saldırı Yasağı</div>
+      <p>NAP7 üyeleri, NAP7 kapsamındaki hiçbir ittifakın şehrine veya kaynak karolarına saldıramaz.</p>
+      <ul>
+        <li>Saldırıya uğramanız durumunda savaş raporunu liderinizle derhal paylaşın.</li>
+        <li>Her iki tarafın önceden mutabık kaldığı saldırılara izin verilir.</li>
+      </ul>
+      <div class="consequence-box">
+        <div class="box-title">Yaptırımlar — Kaynak Karolarına Saldırı</div>
+        <ul>
+          <li>Karşı tarafın eşit şekilde misilleme yapabilmesi için karede aynı sayıda asker bırakılmalıdır.</li>
+          <li>Fırın seviyeleri arasında büyük fark varsa, benzer fırın seviyesine sahip bir üye, saldırganın kaynak karolarına misilleme saldırısı düzenleyebilir.</li>
+        </ul>
+      </div>
+      <div class="consequence-box">
+        <div class="box-title">Yaptırımlar — Şehir Saldırıları</div>
+        <ol>
+          <li><strong>1. İhlal:</strong> Takviyesiz toplu saldırı. Toplu saldırı sayısı, yapılan şehir saldırısı sayısıyla eşit olmalıdır.</li>
+          <li><strong>2. İhlal:</strong> Akademi ve çiftlik ittifakları dahil tüm NAP ittifaklarından men.</li>
+          <li><strong>3. İhlal:</strong> Sıfırlama (tüm birlikler yok edilir).</li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Kural #2 — Çiftlik & Akademi Koruması</div>
+      <ul>
+        <li>Her ittifakın NAP koruması altında <strong>bir (1) çiftlik</strong> ve <strong>bir (1) akademi</strong> hakkı vardır.</li>
+        <li>Fazladan çiftlik veya akademiler <strong>koruma kapsamında değildir</strong> ve saldırıya açıktır.</li>
+        <li>Yeni bir çiftlik veya akademi oluşturulduğunda NAP'a bildirilmeli ve ittifak açıklamasında belirtilmelidir.</li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Kural #3 — Taciz & Saldırgan Davranış Yasağı</div>
+      <div class="rule-title">Yasaklanan Davranışlar</div>
+      <p>Kişisel sohbet, ittifak sohbeti, dünya sohbeti dahil hiçbir kanalda NAP7 üyelerine hakaret etmek, taciz etmek veya hedef almak yasaktır.</p>
+      <div class="rule-title">Tanımlar</div>
+      <ul>
+        <li><strong>Taciz:</strong> Rahatsızlık, aşağılama veya psikolojik sıkıntıya yol açan istenmeyen davranışlar. Tehditler, hakaretler, ayrımcılık veya diğer oyuncuları manipüle etme ya da kontrol altına alma girişimleri bu kapsama girer.</li>
+        <li><strong>Saldırgan Davranış:</strong> Nefret söylemi, çevrimiçi taciz veya rahatsız edici içerik paylaşımı gibi kaba, aşağılayıcı ya da saldırgan tutumlar.</li>
+      </ul>
+      <div class="rule-title">Şikâyet Süreci</div>
+      <ol>
+        <li>Kişiden derhal durmasını isteyin.</li>
+        <li>Kişisel sohbette devam ederse, olayı kendi R4/R5'inize ve karşı tarafın R4/R5'ine bildirin.</li>
+        <li>Dünya sohbetinde devam eder ve başkaları rahatsızlık duyarsa, kendi veya karşı R4/R5 ile iletişime geçin.</li>
+        <li>Tekrarlayan olaylar NAP7 sohbetine taşınabilir.</li>
+        <li>Çözüme kavuşturulamazsa, tarafsız üç R5 tacizin gerçekleşip gerçekleşmediğine ve uygulanacak cezaya karar verir.</li>
+      </ol>
+      <div class="note-box">
+        <div class="box-title">Karşılıklı Saygı İlkesi</div>
+        <ul>
+          <li>Taciz; ancak bir taraf durması uyarısına rağmen ihlali sürdürdüğünde geçerli sayılır.</li>
+          <li>Her iki taraf da benzer davranışlar sergiliyorsa, hiçbiri taciz mağduru olarak kabul edilemez.</li>
+        </ul>
+      </div>
+      <div class="consequence-box">
+        <div class="box-title">Yaptırımlar — Bireyler</div>
+        <ol>
+          <li><strong>1. İhlal:</strong> Özür dileyip durulması. Görmezden gelinirse 1 hafta deneme ittifakı.</li>
+          <li><strong>2. İhlal:</strong> İstisna tanınmaksızın 1 hafta deneme ittifakı.</li>
+          <li><strong>3. İhlal:</strong> NAP7'den kalıcı men. Tacizin sürmesi sıfırlamayla sonuçlanabilir.</li>
+        </ol>
+      </div>
+      <div class="consequence-box">
+        <div class="box-title">Yaptırımlar — İttifaklar</div>
+        <ul>
+          <li>3 veya daha fazla üye tacize karıştıysa: İttifak 2 hafta boyunca kale/SH'den men edilir.</li>
+          <li>İhlallerin sürmesi: 4 haftaya çıkar.</li>
+          <li>Tekrarlayan ihlaller: İttifak NAP7'den çıkarılır; ihlal eden üyeler sıfırlanır.</li>
+        </ul>
+      </div>
+      <div class="consequence-box">
+        <div class="box-title">Yaptırımlar — R5 Liderlik</div>
+        <ol>
+          <li><strong>1. İhlal:</strong> 1 hafta hapis.</li>
+          <li><strong>2. İhlal:</strong> 2 hafta hapis.</li>
+          <li><strong>3. İhlal:</strong> 4 hafta hapis + NAP'tan ihraç.</li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Kural #4 — İttifaktan Ayrılarak NAP Üyelerine Saldırı Yasağı</div>
+      <p>Bir üye, NAP üyelerine saldırmak amacıyla kasıtlı olarak ittifakından ayrılırsa, diğer tüm NAP ittifakları mağdur ittifakın savunmasına destek olmakla yükümlüdür.</p>
+      <div class="consequence-box">
+        <div class="box-title">Yaptırımlar — Kaynak Karolarına Saldırı</div>
+        <ul>
+          <li>Eşit misillemeye olanak tanımak için aynı sayıda asker bırakılmalıdır.</li>
+          <li>Benzer fırın seviyesine sahip üyeler misilleme saldırısını üstlenebilir.</li>
+        </ul>
+      </div>
+      <div class="consequence-box">
+        <div class="box-title">Yaptırımlar — Şehir Saldırıları</div>
+        <ol>
+          <li><strong>1. İhlal:</strong> Takviyesiz toplu saldırı. Toplu saldırı sayısı = şehir saldırısı sayısı.</li>
+          <li><strong>2. İhlal:</strong> Tüm NAP ittifaklarından men.</li>
+          <li><strong>3. İhlal:</strong> Sıfırlama.</li>
+        </ol>
+      </div>
+      <div class="note-box">
+        <div class="box-title">Not</div>
+        <p>Bu kurallar yalnızca ilgili ittifakların karşılıklı anlaşmaya varamaması durumunda geçerlidir. Anlaşma sağlanırsa NAP bu kararı kabul eder.</p>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Kural #5 — Anlaşmazlık Çözümü</div>
+      <ul>
+        <li>İlk üç ittifak, ittifaklar arasındaki anlaşmazlıkların çözümüne katılmakla yükümlüdür.</li>
+        <li>Bu ittifakların kararı kesindir.</li>
+        <li>İlk üç ittifaktan biri anlaşmazlığın tarafıysa, 4. ittifak sürece dahil olur.</li>
+      </ul>
+      <div class="consequence-box">
+        <div class="box-title">Yaptırımlar — NAP Kararlarına Uymama</div>
+        <ol>
+          <li><strong>1. İhlal:</strong> İttifak iki hafta boyunca kale kontrolünü kaybeder.</li>
+          <li><strong>2. İhlal:</strong> İttifak NAP'tan çıkarılır.</li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Oylama Prosedürü</div>
+      <p>Herhangi bir önerinin kabul edilmesi için çoğunluk oyu gereklidir.</p>
+      <div class="rule-title">Oylama Süresi</div>
+      <p>NAP7 Oylama kanalına bir oylama gönderildikten sonra tüm NAP7 ittifaklarının <strong>24 saat</strong> içinde oyunu kullanması gerekir. Bu süre içinde oy kullanmayan ittifakların oyu sonucu etkilemez.</p>
+    </div>
+  `,
+
+  facility: `
+    <div class="section">
+      <div class="section-title">Tesis Kuralları</div>
+      <div class="rule-title">Kural #1 — Genel Tesis Kuralları</div>
+      <ul>
+        <li>Tesis ele geçirmek amacıyla çiftlik veya akademi ittifakına geçmek <strong>yasaktır</strong>.</li>
+        <li>Bir tesisi elde tutmak veya almak için ittifak değiştirmek <strong>yasaktır</strong>.</li>
+        <li>Cumhurbaşkanları, tesis, kale veya merkez savaşları sırasında rakip ittifak üyelerini görevden alamaz.</li>
+        <li>İkiden fazla ittifak aynı tesis için rekabet edebilir. Ancak bir ittifakın tesis almasını engellemek amacıyla birleşmek <strong>yasaktır</strong>.</li>
+        <li>İttifakınız aynı seviyede aynı büyüyü içeren bir tesise zaten sahipse, bir tane daha alamazsınız. <em>Örnek: Seviye 4 Savunma tesisine sahipseniz başka bir Seviye 4 Savunma tesisi alamazsınız.</em></li>
+        <li>Devlet Karşı Devlet etkinliğinde S31 ittifakı bir Seviye 4 Savunma ve bir Seviye 4 Saldırı tesisi alır. Karşı toplu saldırı ittifakı da aynı şekilde alır.</li>
+        <li>Başka bir ittifakın bir tesise bağlanmasını engellemek için bayrak kullanmak <strong>yasaktır</strong>. İstenildiğinde bayrağı taşımayı reddetmek yaptırımla sonuçlanır.</li>
+        <li>Savunma süresini düşürmek amacıyla başka bir ittifaktan tesis saldırısı istemek veya teklif etmek yasaktır.</li>
+        <li>Tesisi almak niyeti olmadan saldırı düzenlemek için, o tesise bağlı tüm NAP8 ittifaklarının onayı gerekir. Bu kural yalnızca saldıran ittifakın aynı tesis türüne ve seviyesine zaten sahip olduğu durumlarda geçerlidir. Saldıran ittifak kazanırsa tesisi başka bir bağlı ittifaka devretmelidir.</li>
+      </ul>
+      <div class="consequence-box">
+        <div class="box-title">Yaptırımlar</div>
+        <p>Bu kurallardan birini ihlal eden ittifak <strong>bir haftalık uyarı</strong> alır ve bu süre boyunca söz konusu tesis için rekabet edemez. Aynı ittifak aynı tesiste kuralı tekrar ihlal ederse bayrağını o tesisten kaldırmak zorunda kalır.</p>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Kale & Merkez Dağılımı</div>
+      <div class="rule-title">SVS Hazırlık Puanına Göre Dağılım</div>
+      <ul>
+        <li><strong>İlk 4 İttifak:</strong> Her biri 1 Merkez (SH) + 2 Kale (F) alır</li>
+        <li><strong>5–7. İttifaklar:</strong> Her biri 1 Kale (F) alır</li>
+        <li><strong>12. Kale:</strong> Serbest Rekabet (FFA)</li>
+      </ul>
+      <div class="note-box">
+        <div class="box-title">Notlar</div>
+        <ul>
+          <li>İttifaklar, rotasyon takvimine göre kendilerine atanan kaleleri ve merkezleri almakla yükümlüdür.</li>
+          <li>Serbest Rekabet Kalesi, FFA döneminde herhangi bir ittifak tarafından ele geçirilebilir.</li>
+          <li>SVS Hazırlık Puanı dağılımı belirler; daha iyi hazırlık daha güçlü konum demektir.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Kale & Merkez Ayrıntılı Kuralları</div>
+      <ul>
+        <li><strong>Yanlış kale/merkez alınması:</strong> İhlal eden ittifakın kendi kalesi ve merkezi, etkilenen ittifaka iki hafta (iki tur) boyunca devredilir.</li>
+        <li><strong>Sezonluk FFA Kaleleri:</strong> Her sezonun ilk haftasında (her 8 haftada bir) tüm ekstra kaleler Serbest Rekabete açılır.</li>
+        <li><strong>FFA Katılım Hakkı:</strong> NAP koruması altında olmayan ittifaklar dahil her ittifak FFA kalelerine katılabilir.</li>
+        <li><strong>Otomatik Kayıtlar:</strong> Otomatik olarak kayıt yaptırılan ancak o hafta kaleyi almak için planı olmayan ittifaklar, ilk el koyma ödülleri toplandıktan sonra bulmaca parçası puanı kazanmak için tek askerlik yürüyüş gönderebilir.</li>
+      </ul>
+    </div>
+  `,
+
+  castle: `
+    <div class="section">
+      <div class="section-title">İç Sur & Taret Kuralları</div>
+      <div class="rule-title">Savaş Takvimi</div>
+      <div class="schedule-block">
+        <div class="schedule-item"><span>Sur savaşı başlangıcı</span><span class="schedule-time">12:00 UTC</span></div>
+        <div class="schedule-item"><span>Sura ışınlanma açılışı</span><span class="schedule-time">11:00 UTC</span></div>
+        <div class="schedule-item"><span>Serbest Savaş (FFA)</span><span class="schedule-time">12:00 – 14:00 UTC</span></div>
+        <div class="schedule-item"><span>Sıradaki NAP ittifakı suru ele geçirir (2,5 saat)</span><span class="schedule-time">14:00 UTC</span></div>
+      </div>
+      <div class="note-box">
+        <div class="box-title">2,5 Saatlik Başkanlık Dilimi Kuralları</div>
+        <ul>
+          <li>Bu süre zarfında sura toplu saldırı düzenlemek <strong>yasaktır</strong>.</li>
+          <li>Yalnızca tekli saldırılara izin verilir.</li>
+          <li>2,5 saatlik başkanlık süresi dolunca sur tekrar Serbest Savaşa açılır.</li>
+          <li>Başkanlık dilimi, ittifakın müsaitliğine göre ayarlanabilir.</li>
+        </ul>
+      </div>
+      <div class="rule-title">Sur Çevresi Kısıtlamaları</div>
+      <ul>
+        <li>Sur çevresindeki şehirlere saldırmak veya keşif yapmak yasaktır.</li>
+        <li>Sur savaşı sırasında Mücevher Büyüleri (%20) yasaktır. Atanmış taret bu kuralın istisnasıdır.</li>
+      </ul>
+      <div class="consequence-box">
+        <div class="box-title">Yaptırımlar — Başkanlık İttifakını Toplu Saldırıyla Çıkarmak</div>
+        <ol>
+          <li><strong>1. İhlal:</strong> Uyarı.</li>
+          <li><strong>3+ İhlal:</strong> O SFC savaşının geri kalanından men.</li>
+          <li><strong>Süregelen İhlaller:</strong> 1 hafta boyunca başkanlık cezası uygulanır.</li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Başkanlık Rotasyonu</div>
+      <ul>
+        <li><strong>İç Güneş Ateş Suru:</strong> Başkanlık, SVS Hazırlık Puanına göre <strong>4–7. sıradaki</strong> ittifaklar arasında sırayla el değiştirir.</li>
+        <li><strong>SVS Güneş Ateş Suru (Yüksek Başkanlık):</strong> Başkanlık, SVS Hazırlık Puanına göre <strong>1–3. sıradaki</strong> ittifaklar arasında sırayla el değiştirir.</li>
+      </ul>
+      <div class="rule-title">Rotasyon Döngüsü</div>
+      <ul>
+        <li>Rotasyon döngüsü, NAP'taki ittifak sayısına göre belirlenir.</li>
+        <li>Tüm uygun ittifaklar en az bir kez başkanlık yapana kadar döngü sürer.</li>
+        <li>Başkanlığı reddeden ittifakın sırası bir sonrakine geçer.</li>
+        <li>Rotasyon sırası, her döngünün başında en yüksek SVS Hazırlık Puanından en düşüğe doğru belirlenir.</li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Başkanlık Kuralları & Yönergeleri</div>
+      <div class="rule-title">Kural No. 1 — Mücevher Dönüşümü</div>
+      <p>Toplam yetki <strong>1.000.000'u</strong> aşmadığı sürece yetkinin mücevhere dönüştürülmesi <strong>yasaktır</strong>.</p>
+      <div class="rule-title">SVS Hazırlık Dönemi Büyü Takvimi</div>
+      <p>Cumhurbaşkanı, tüm büyülerin SVS 2. Hafta hazırlığına yetişmesini sağlayacak bir takvim oluşturmalıdır.</p>
+      <div class="schedule-block">
+        <h4>1. Hafta</h4>
+        <div class="schedule-item"><span>Pazar 23:30 UTC</span><span class="schedule-time">Ticaret — İnşaat Büyüsü</span></div>
+        <div class="schedule-item"><span>Pazartesi 23:30 UTC</span><span class="schedule-time">Araştırma Gelişimi — Araştırma Büyüsü</span></div>
+        <div class="schedule-item"><span>Çarşamba 23:30 UTC</span><span class="schedule-time">Seferberlik — Asker Eğitimi Büyüsü</span></div>
+      </div>
+      <div class="schedule-block">
+        <h4>2. Hafta</h4>
+        <div class="schedule-item"><span>Pazartesi 00:00 UTC</span><span class="schedule-time">Ticaret — İnşaat Büyüsü</span></div>
+        <div class="schedule-item"><span>Salı 00:00 UTC</span><span class="schedule-time">Araştırma Gelişimi — Araştırma Büyüsü</span></div>
+        <div class="schedule-item"><span>Perşembe 00:00 UTC</span><span class="schedule-time">Seferberlik — Asker Eğitimi Büyüsü</span></div>
+      </div>
+    </div>
+  `,
+
+  bia: `
+    <div class="section">
+      <div class="section-title">Silah Arkadaşları (BIA) Kuralları</div>
+      <div class="rule-title">Kaynak Karoları</div>
+      <p>Tüm kaynak karolarına saldırı <strong>serbesttir</strong>.</p>
+      <div class="rule-title">NAP Şehirlerine Kısıtlamalar</div>
+      <ul>
+        <li>NAP şehirlerine saldırı, keşif ve toplu saldırı <strong>yasaktır</strong>; şehirlerin ittifak toprakları dışında bulunması hariç. NAP koruması ittifak bölgesi dışında geçerli değildir.</li>
+        <li>Saldırı, keşif veya toplu saldırı yapabilmek için hem kendi şehriniz hem de NAP şehri ittifak toprakları dışında olmalıdır.</li>
+        <li>Not: Bu durumda karşı saldırılara açık olursunuz.</li>
+      </ul>
+      <div class="rule-title">Şehir Sıfırlama Yasağı</div>
+      <p>Başka oyuncuların şehirlerini sıfırlamak <strong>yasaktır</strong>. Yanmayan bir şehre en fazla <strong>2 saldırı</strong> yapılabilir.</p>
+      <div class="rule-title">Belirli Koşullarda Saldırı Yasağı</div>
+      <ul>
+        <li>İttifak topraklarına kısmen de olsa dokunan şehirlere saldırı yasaktır.</li>
+        <li>Kale, tesis veya sur savaşları sırasında saldırı yasaktır.</li>
+      </ul>
+      <div class="rule-title">NAP7 Üyelerine Toplu Saldırı</div>
+      <ul>
+        <li>Hem toplu saldırı lideri hem de hedef alınan NAP7 üyesi ittifak bayrakları dışında olmalıdır.</li>
+        <li>Toplu saldırıya katılan oyuncuların ittifak toprakları dışında olması gerekmez.</li>
+        <li>Hem toplu saldırı lideri hem de hedef oyuncu takviye alabilir.</li>
+        <li>Takviye gönderen oyuncuların ittifak toprakları dışında olması gerekmez.</li>
+      </ul>
+      <div class="rule-title">NAP Dışı İttifaklar</div>
+      <p>NAP koruması altında olmayan ittifaklar her zaman saldırıya açıktır. Bu ittifakların bayrakları ve karargahları da her zaman yakılabilir.</p>
+      <div class="consequence-box">
+        <div class="box-title">Yaptırımlar</div>
+        <ol>
+          <li><strong>1. İhlal:</strong> Uyarı, başkanlık cezası + eşit misilleme (yalnızca liderinizi bilgilendirdikten sonra).</li>
+          <li><strong>2. İhlal:</strong> Eşit misilleme, ittifaktan çıkarılma ve tüm NAP ittifaklarından men.</li>
+          <li><strong>3. İhlal:</strong> Sıfırlama.</li>
+        </ol>
+      </div>
+    </div>
+  `,
+
+  transfers: `
+    <div class="section">
+      <div class="section-title">Transfer Mülakat Soruları</div>
+      <p>Başvuru yapan tüm adaylara aşağıdaki sorular yöneltilir:</p>
+      <ol>
+        <li>Yeni bir eyalete transfer olmak istemenizin nedeni nedir?</li>
+        <li>İttifakınızın başarısını mı, eyaletin genel başarısını mı, yoksa ikisini birden mi önceliklendiriyorsunuz?</li>
+        <li>Transfer hakkında herhangi bir endişeniz veya sorunuz var mı?</li>
+        <li>Yeni eyaletten ne bekliyorsunuz?</li>
+        <li>Siz ve grubunuzun yeterli transfer pasaportunuz var mı?</li>
+        <li>Lütfen üyelerinizin güç ve fırın seviyelerini paylaşın.</li>
+        <li>Yeni bir ittifak kurmak mı yoksa mevcut bir ittifaka katılmak mı istiyorsunuz?</li>
+        <li>Siz ve üyeleriniz ne kadar aktifsiniz?</li>
+        <li>SVS hazırlık döneminde üyeleriniz genellikle nasıl performans gösterir?</li>
+      </ol>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Transfer Prosedürü & Yönergeleri</div>
+      <div class="rule-title">Genel Süreç</div>
+      <ul>
+        <li>Tüm transfer başvuruları, 2. Aşama başlamadan önce listelenir ve oylanır.</li>
+        <li>Küçük transferlerde (20 kişiden az), ilk davet oylamasından sonra ek oylama yapılmaz.</li>
+        <li>Adaylarla mülakat yapılır, ikinci bir değerlendirmeden geçirilir ve bilgileri NAP ile paylaşılır.</li>
+      </ul>
+      <div class="rule-title">İletişim Gereksinimleri</div>
+      <ul>
+        <li>Yeni grup ve oyuncuların NAP7 ile anlık iletişim için Discord'a katılmaları teşvik edilir.</li>
+        <li>Discord kullanılamıyorsa, Eyalet 2231 içinde oyun içi bir sohbet grubu oluşturulabilir.</li>
+      </ul>
+      <div class="rule-title">Özel Davetiyeler (SI)</div>
+      <ul>
+        <li>Gereksiz yere harcanmaması için transfer başına gerektiğinde bir SI kullanılır.</li>
+        <li>SI gerektiren oyuncu yoksa, açık transfer veya talep eden arkadaşlar için saklanabilir.</li>
+        <li>Özellikle gerektiren oyuncular için kullanılmadıkça, transfer başına 3 SI bulundurulması tavsiye edilir.</li>
+      </ul>
+      <div class="rule-title">Katılım Kriterleri</div>
+      <ul>
+        <li>FC5 altındaki oyunculara davetiye gönderilmez; bu oyuncular 3. Aşama açık transferde katılabilir.</li>
+        <li>Toplam transfer sayısı 35'in altındaysa, FC5 altındaki oyunculara da ilk gelenle başlar ilkesiyle davetiye gönderilebilir.</li>
+      </ul>
+      <div class="rule-title">Gruplar & Yüksek Güçlü Oyuncular</div>
+      <ul>
+        <li>5 kişiden büyük gruplar veya çok güçlü oyuncular; tarama soruları, aktivite/güç kontrolleri ve Discord ya da alternatif iletişim gerektiren tam incelemeden geçirilmelidir.</li>
+        <li>Küçük gruplara (5 veya daha az kişi) inisiyatife bağlı hafifletilmiş inceleme uygulanabilir.</li>
+        <li>Güvenilir üyeler tarafından önerilen tek kişi veya 3 kişiye kadar gruplara makul istisnalar tanınabilir.</li>
+        <li>4 veya daha fazla kişilik gruplar ya da çok güçlü oyuncular her durumda tam incelemeden geçirilmelidir.</li>
+      </ul>
+      <div class="rule-title">Öncelik & Zamanlama</div>
+      <ul>
+        <li>En çok boş yeri olan ittifaklar öncelikli olarak değerlendirilir.</li>
+        <li>Mevcut üyelerin tanıdıkları, tamamen yeni gruplara karşı hafif bir önceliğe sahiptir.</li>
+        <li>2. Aşamanın bitmesine 24 saat kala, 3. Aşama adaylarına davetiyeler gönderilir.</li>
+      </ul>
+      <div class="rule-title">Yeni İttifak Kurma Talepleri</div>
+      <ul>
+        <li>Yeni ittifaka izin verilip verilmeyeceği oy ile belirlenir. Ret durumunda mevcut ittifaklara entegrasyon önce değerlendirilir.</li>
+        <li>Transfer olmuş bir grup yeni ittifak kurmak ister ancak oy "Hayır" çıkarsa, önce tüm alternatifler araştırılmalıdır.</li>
+        <li>Çözüm bulunamazsa, grup yeni bir NAP ittifakı kurabilir.</li>
+      </ul>
+    </div>
+  `
+}
+
+,
+
+// ============================================================
+// RUSSIAN
+// ============================================================
+ru: {
+  subtitle: "Официальные правила альянсов",
+  tab_overview: "Обзор и события",
+  tab_nap: "Правила NAP",
+  tab_facility: "Объекты и крепости",
+  tab_castle: "Замок и президентство",
+  tab_bia: "Братья по оружию",
+  tab_transfers: "Переводы",
+  nap7_list_title: "Альянсы NAP7",
+  event_times_title: "Время событий (UTC)",
+  th_alliance: "Альянс",
+  footer_text: "Штат 2231 · Официальные правила NAP7 · Все альянсы обязаны соблюдать эти правила.",
+
+  nap: `
+    <div class="section">
+      <div class="section-title">Правило №1 — Запрет атак</div>
+      <p>Участники NAP7 не вправе атаковать города или тайлы сбора ресурсов любого другого альянса в NAP7.</p>
+      <ul>
+        <li>Если на вас напали — немедленно передайте отчёт о бою своему руководству.</li>
+        <li>Атаки, заранее согласованные обеими сторонами, разрешены.</li>
+      </ul>
+      <div class="consequence-box">
+        <div class="box-title">Последствия — Атаки на тайлы сбора</div>
+        <ul>
+          <li>Оставьте на тайле то же количество войск, чтобы другая сторона имела равную возможность для ответного удара.</li>
+          <li>При значительной разнице уровней печи участник с похожим уровнем может нанести ответный удар по тайлам сбора атакующего.</li>
+        </ul>
+      </div>
+      <div class="consequence-box">
+        <div class="box-title">Последствия — Атаки на города</div>
+        <ol>
+          <li><strong>1-е нарушение:</strong> Рейдовая атака без подкреплений. Количество рейдов равно числу атак на города.</li>
+          <li><strong>2-е нарушение:</strong> Бан из всех альянсов NAP, включая академии и фарм-альянсы.</li>
+          <li><strong>3-е нарушение:</strong> Обнуление (полное уничтожение войск).</li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Правило №2 — Защита ферм и академий</div>
+      <ul>
+        <li>Каждый альянс имеет право на <strong>одну (1) ферму</strong> и <strong>одну (1) академию</strong> под защитой NAP.</li>
+        <li>Дополнительные фермы и академии <strong>не защищены</strong> и могут быть атакованы.</li>
+        <li>При создании новой фермы или академии необходимо уведомить NAP и указать её статус в описании альянса.</li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Правило №3 — Запрет преследования и оскорбительного поведения</div>
+      <div class="rule-title">Запрещённые действия</div>
+      <p>Запрещается оскорблять, преследовать или целенаправленно нападать на участников NAP7 в любых чатах — личных, альянсовых, мировых или любых других.</p>
+      <div class="rule-title">Определения</div>
+      <ul>
+        <li><strong>Преследование:</strong> Нежелательные действия, причиняющие дискомфорт, унижение или психологический вред. Включает угрозы, оскорбления, дискриминацию, попытки манипулировать другими игроками или контролировать их.</li>
+        <li><strong>Оскорбительное поведение:</strong> Грубые, унизительные или агрессивные действия: язык ненависти, онлайн-травля, распространение неприемлемого контента.</li>
+      </ul>
+      <div class="rule-title">Порядок подачи жалобы</div>
+      <ol>
+        <li>Немедленно попросите человека прекратить.</li>
+        <li>Если поведение продолжается в личном чате — сообщите своему R4/R5 и R4/R5 противоположной стороны.</li>
+        <li>Если продолжается в мировом чате и другие игроки считают это оскорбительным — обратитесь к своему или чужому R4/R5.</li>
+        <li>При повторных инцидентах вопрос может быть вынесен в чат NAP7.</li>
+        <li>Если ситуация не разрешена, трое незаинтересованных R5 решают, является ли это преследованием, и определяют наказание.</li>
+      </ol>
+      <div class="note-box">
+        <div class="box-title">Принцип взаимного уважения</div>
+        <ul>
+          <li>Преследование признаётся таковым только в том случае, если одна из сторон продолжает нарушения после просьбы остановиться.</li>
+          <li>Если обе стороны участвуют в подобном поведении, ни одна из них не может заявить о преследовании.</li>
+        </ul>
+      </div>
+      <div class="consequence-box">
+        <div class="box-title">Последствия — Для игроков</div>
+        <ol>
+          <li><strong>1-е нарушение:</strong> Извинение и прекращение. Если проигнорировано — 1 неделя в испытательном режиме.</li>
+          <li><strong>2-е нарушение:</strong> 1 неделя в испытательном режиме, без исключений.</li>
+          <li><strong>3-е нарушение:</strong> Бан из NAP7. Продолжение преследования может привести к обнулению.</li>
+        </ol>
+      </div>
+      <div class="consequence-box">
+        <div class="box-title">Последствия — Для альянсов</div>
+        <ul>
+          <li>3 и более участников нарушают правила: альянс лишается крепости/SH на 2 недели.</li>
+          <li>Продолжение нарушений: срок увеличивается до 4 недель.</li>
+          <li>Систематические нарушения: альянс исключается из NAP7; нарушители обнуляются.</li>
+        </ul>
+      </div>
+      <div class="consequence-box">
+        <div class="box-title">Последствия — Для лидеров R5</div>
+        <ol>
+          <li><strong>1-е нарушение:</strong> 1 неделя заключения.</li>
+          <li><strong>2-е нарушение:</strong> 2 недели заключения.</li>
+          <li><strong>3-е нарушение:</strong> 4 недели заключения + исключение из NAP.</li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Правило №4 — Запрет атак на участников NAP после выхода из альянса</div>
+      <p>Если участник намеренно покидает альянс с целью атаковать членов NAP, все остальные альянсы NAP обязаны помочь в обороне пострадавшего альянса.</p>
+      <div class="consequence-box">
+        <div class="box-title">Последствия — Атаки на тайлы сбора</div>
+        <ul>
+          <li>Оставьте то же количество войск для равного ответного удара.</li>
+          <li>Участник с аналогичным уровнем печи может провести ответную атаку.</li>
+        </ul>
+      </div>
+      <div class="consequence-box">
+        <div class="box-title">Последствия — Атаки на города</div>
+        <ol>
+          <li><strong>1-е нарушение:</strong> Рейдовая атака без подкреплений. Количество рейдов = числу атак на города.</li>
+          <li><strong>2-е нарушение:</strong> Бан из всех альянсов NAP.</li>
+          <li><strong>3-е нарушение:</strong> Обнуление.</li>
+        </ol>
+      </div>
+      <div class="note-box">
+        <div class="box-title">Примечание</div>
+        <p>Эти правила применяются только при отсутствии взаимного соглашения между сторонами. При наличии договорённости NAP уважает это решение.</p>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Правило №5 — Разрешение споров</div>
+      <ul>
+        <li>Три ведущих альянса обязаны участвовать в разрешении споров между альянсами.</li>
+        <li>Их решение является окончательным.</li>
+        <li>Если один из трёх ведущих альянсов является стороной спора, в процессе участвует альянс, занимающий 4-е место.</li>
+      </ul>
+      <div class="consequence-box">
+        <div class="box-title">Последствия — Несоблюдение решений NAP</div>
+        <ol>
+          <li><strong>1-е нарушение:</strong> Альянс теряет контроль над крепостью на две недели.</li>
+          <li><strong>2-е нарушение:</strong> Альянс исключается из NAP.</li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Процедура голосования</div>
+      <p>Для принятия любого предложения требуется большинство голосов.</p>
+      <div class="rule-title">Сроки голосования</div>
+      <p>После публикации голосования в канале NAP7 все альянсы NAP7 обязаны проголосовать в течение <strong>24 часов</strong>. Голос альянса, не успевшего проголосовать, не учитывается в итоге.</p>
+    </div>
+  `,
+
+  facility: `
+    <div class="section">
+      <div class="section-title">Правила объектов</div>
+      <div class="rule-title">Правило №1 — Общие правила объектов</div>
+      <ul>
+        <li>Переход в фарм-альянс или альянс-академию с целью захвата объекта <strong>запрещён</strong>.</li>
+        <li>Смена альянса для удержания или захвата объекта <strong>запрещена</strong>.</li>
+        <li>Президент не вправе снимать участников противоборствующего альянса с должностей во время сражений за объект, крепость или оплот.</li>
+        <li>За один объект могут бороться более двух альянсов. Однако объединяться с целью не допустить другой альянс к объекту <strong>запрещено</strong>.</li>
+        <li>Нельзя захватывать объект, если у вашего альянса уже есть объект того же типа и уровня. <em>Пример: если у вас уже есть объект Обороны 4-го уровня, захватить ещё один такой же нельзя.</em></li>
+        <li>В событии «Штат против штата» альянс S31 получает один объект Атаки 4-го уровня и один объект Обороны 4-го уровня. Контр-рейдовый альянс получает то же самое.</li>
+        <li>Использование баннеров для блокировки подключения другого альянса к объекту <strong>запрещено</strong>. Отказ убрать баннеры по запросу влечёт наказание.</li>
+        <li>Запрещается просить другой альянс атаковать объект от вашего имени или предлагать атаку с целью сокращения таймера защиты.</li>
+        <li>Атака объекта без намерения его захватить требует согласия всех альянсов NAP8, подключённых к этому объекту. Правило применяется только если атакующий альянс уже владеет объектом того же типа и уровня. В случае победы атакующий альянс обязан передать объект другому подключённому альянсу.</li>
+      </ul>
+      <div class="consequence-box">
+        <div class="box-title">Последствия</div>
+        <p>Альянс, нарушивший одно из правил, получает <strong>предупреждение сроком на одну неделю</strong>, в течение которой он не может участвовать в борьбе за данный объект. При повторном нарушении на том же объекте альянс будет обязан убрать свой баннер с него.</p>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Распределение крепостей и оплотов</div>
+      <div class="rule-title">По очкам подготовки к SVS</div>
+      <ul>
+        <li><strong>Топ-4 альянса:</strong> Каждый получает 1 оплот (SH) + 2 крепости (F)</li>
+        <li><strong>Альянсы 5–7 мест:</strong> Каждый получает 1 крепость (F)</li>
+        <li><strong>12-я крепость:</strong> Свободный захват (FFA)</li>
+      </ul>
+      <div class="note-box">
+        <div class="box-title">Примечания</div>
+        <ul>
+          <li>Альянсы обязаны захватывать назначенные крепости и оплоты согласно расписанию ротации.</li>
+          <li>Крепость свободного захвата может оспариваться любым альянсом в период FFA.</li>
+          <li>Очки подготовки к SVS определяют распределение — чем лучше подготовка, тем сильнее позиция.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Детальные правила крепостей и оплотов</div>
+      <ul>
+        <li><strong>Захват чужой крепости/оплота:</strong> Крепость и оплот нарушителя передаются пострадавшему альянсу на две недели (два хода).</li>
+        <li><strong>Сезонные FFA-крепости:</strong> В первую неделю каждого сезона (каждые 8 недель) все дополнительные крепости переходят в режим свободного захвата.</li>
+        <li><strong>Право на участие в FFA:</strong> Любой альянс, включая не входящие в NAP, может участвовать в захвате FFA-крепостей.</li>
+        <li><strong>Автоматические записи:</strong> Если альянс автоматически записан на крепость или оплот, но не планирует её захватывать на этой неделе, участники могут отправить марш с одним бойцом после получения первой награды за захват, чтобы заработать очко фрагмента пазла.</li>
+      </ul>
+    </div>
+  `,
+
+  castle: `
+    <div class="section">
+      <div class="section-title">Правила замка и башен</div>
+      <div class="rule-title">Расписание боя</div>
+      <div class="schedule-block">
+        <div class="schedule-item"><span>Начало битвы за замок</span><span class="schedule-time">12:00 UTC</span></div>
+        <div class="schedule-item"><span>Телепортация к замку открыта с</span><span class="schedule-time">11:00 UTC</span></div>
+        <div class="schedule-item"><span>Бой в режиме «всем против всех»</span><span class="schedule-time">12:00 – 14:00 UTC</span></div>
+        <div class="schedule-item"><span>Следующий альянс NAP занимает замок (2,5 часа)</span><span class="schedule-time">14:00 UTC</span></div>
+      </div>
+      <div class="note-box">
+        <div class="box-title">Правила 2,5-часового президентского слота</div>
+        <ul>
+          <li>Рейдовые атаки на замок в это время <strong>запрещены</strong>.</li>
+          <li>Разрешены только одиночные атаки.</li>
+          <li>По истечении 2,5 часов замок возвращается в режим свободного боя.</li>
+          <li>Время президентского слота может быть скорректировано с учётом возможностей альянса.</li>
+        </ul>
+      </div>
+      <div class="rule-title">Ограничения зоны замка</div>
+      <ul>
+        <li>Атаковать или разведывать города в окрестностях замка запрещено.</li>
+        <li>Во время битвы за замок бонусы за самоцветы (20%) запрещены, за исключением назначенной башни.</li>
+      </ul>
+      <div class="consequence-box">
+        <div class="box-title">Последствия — Рейды и вытеснение президентского альянса</div>
+        <ol>
+          <li><strong>1-е нарушение:</strong> Предупреждение.</li>
+          <li><strong>3+ нарушений:</strong> Отстранение от участия в оставшейся части битвы SFC.</li>
+          <li><strong>Систематические нарушения:</strong> Президентские санкции на 1 неделю.</li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Ротация президентства</div>
+      <ul>
+        <li><strong>Внутренний замок Солнечного огня:</strong> Президентство поочерёдно переходит к альянсам, занимающим <strong>4–7 места</strong> по очкам подготовки к SVS.</li>
+        <li><strong>Замок Солнечного огня SVS (Верховное президентство):</strong> Президентство поочерёдно переходит к альянсам, занимающим <strong>1–3 места</strong> по очкам подготовки к SVS.</li>
+      </ul>
+      <div class="rule-title">Цикл ротации</div>
+      <ul>
+        <li>Продолжительность цикла зависит от числа альянсов в NAP.</li>
+        <li>Цикл завершается, когда каждый подходящий альянс побывал президентом хотя бы раз.</li>
+        <li>Если альянс отказывается от президентства, очередь переходит к следующему альянсу.</li>
+        <li>Порядок ротации устанавливается в начале каждого цикла — от наибольшего к наименьшему значению очков подготовки к SVS.</li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Правила и руководство для президента</div>
+      <div class="rule-title">Правило №1 — Конвертация самоцветов</div>
+      <p>Конвертация полномочий в самоцветы <strong>запрещена</strong>, если общий объём полномочий не превышает <strong>1 000 000</strong>.</p>
+      <div class="rule-title">Расписание бонусов для подготовки к SVS</div>
+      <p>Президент обязан составить расписание, обеспечивающее готовность всех бонусов ко 2-й неделе подготовки к SVS.</p>
+      <div class="schedule-block">
+        <h4>Неделя 1</h4>
+        <div class="schedule-item"><span>Воскресенье 23:30 UTC</span><span class="schedule-time">Меркантилизм — бонус к строительству</span></div>
+        <div class="schedule-item"><span>Понедельник 23:30 UTC</span><span class="schedule-time">Научный прогресс — бонус к исследованиям</span></div>
+        <div class="schedule-item"><span>Среда 23:30 UTC</span><span class="schedule-time">Мобилизация — бонус к обучению войск</span></div>
+      </div>
+      <div class="schedule-block">
+        <h4>Неделя 2</h4>
+        <div class="schedule-item"><span>Понедельник 00:00 UTC</span><span class="schedule-time">Меркантилизм — бонус к строительству</span></div>
+        <div class="schedule-item"><span>Вторник 00:00 UTC</span><span class="schedule-time">Научный прогресс — бонус к исследованиям</span></div>
+        <div class="schedule-item"><span>Четверг 00:00 UTC</span><span class="schedule-time">Мобилизация — бонус к обучению войск</span></div>
+      </div>
+    </div>
+  `,
+
+  bia: `
+    <div class="section">
+      <div class="section-title">Правила «Братьев по оружию» (BIA)</div>
+      <div class="rule-title">Тайлы ресурсов</div>
+      <p>Атаки на все тайлы ресурсов <strong>разрешены</strong>.</p>
+      <div class="rule-title">Ограничения для городов NAP</div>
+      <ul>
+        <li>Атаки, разведка и рейды на города NAP <strong>запрещены</strong>, за исключением городов, расположенных за пределами территории альянса. Защита NAP не действует за пределами зоны вашего альянса.</li>
+        <li>Для атаки, разведки или рейда ваш город и город NAP должны оба находиться за пределами территории альянса.</li>
+        <li>Примечание: действуя за пределами территории альянса, вы открыты для ответных атак.</li>
+      </ul>
+      <div class="rule-title">Запрет обнуления городов</div>
+      <p>Обнуление городов других игроков <strong>запрещено</strong>. Максимум <strong>2 атаки</strong> на город, который не горит.</p>
+      <div class="rule-title">Запрет атак при определённых условиях</div>
+      <ul>
+        <li>Атаковать города, хотя бы частично граничащие с территорией альянса, запрещено.</li>
+        <li>Атаки запрещены во время битв за крепости, объекты или замки.</li>
+      </ul>
+      <div class="rule-title">Рейды на участников NAP7</div>
+      <ul>
+        <li>Лидер рейда и атакуемый участник NAP7 должны оба находиться за пределами баннеров альянса.</li>
+        <li>Игрокам, присоединяющимся к рейду, не обязательно быть за пределами территории альянса.</li>
+        <li>Подкрепления разрешены как для лидера рейда, так и для атакуемого игрока.</li>
+        <li>Игрокам, отправляющим подкрепления, не обязательно находиться за пределами территории альянса.</li>
+      </ul>
+      <div class="rule-title">Альянсы, не входящие в NAP</div>
+      <p>Альянсы без защиты NAP можно атаковать в любое время. Их баннеры и штабы также можно сжигать в любое время.</p>
+      <div class="consequence-box">
+        <div class="box-title">Последствия</div>
+        <ol>
+          <li><strong>1-е нарушение:</strong> Предупреждение, президентское наказание + равнозначная ответная атака (только после уведомления своего руководства).</li>
+          <li><strong>2-е нарушение:</strong> Равнозначная ответная атака, исключение из альянса и бан из всех альянсов NAP.</li>
+          <li><strong>3-е нарушение:</strong> Обнуление.</li>
+        </ol>
+      </div>
+    </div>
+  `,
+
+  transfers: `
+    <div class="section">
+      <div class="section-title">Вопросы для отбора кандидатов</div>
+      <p>Каждому кандидату на перевод задаются следующие вопросы:</p>
+      <ol>
+        <li>Что побуждает вас перейти в новый штат?</li>
+        <li>Что для вас важнее — успех вашего альянса, штата в целом или обоих?</li>
+        <li>Есть ли у вас вопросы или опасения, связанные с переводом?</li>
+        <li>Что вы надеетесь найти в новом штате?</li>
+        <li>Есть ли у вас и вашей группы достаточное количество пропусков для перевода?</li>
+        <li>Пожалуйста, укажите уровень силы и уровень печи ваших участников.</li>
+        <li>Вы хотите создать новый альянс или присоединиться к существующему?</li>
+        <li>Насколько активны вы и ваши участники в обычные дни?</li>
+        <li>Как ваши участники, как правило, показывают себя в период подготовки к SVS?</li>
+      </ol>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Процедура и руководство по переводу</div>
+      <div class="rule-title">Общий процесс</div>
+      <ul>
+        <li>Все заявки на перевод вносятся в список и проходят голосование до начала 2-го этапа.</li>
+        <li>Для небольших переводов (менее 20 человек) дополнительное голосование после первоначального приглашения не требуется.</li>
+        <li>Кандидаты проходят собеседование, вторичную проверку, а их данные передаются в NAP.</li>
+      </ul>
+      <div class="rule-title">Требования к коммуникации</div>
+      <ul>
+        <li>Новым группам и игрокам рекомендуется вступить в Discord для оперативного общения с NAP7.</li>
+        <li>Если Discord недоступен, в штате 2231 можно создать внутриигровой чат.</li>
+      </ul>
+      <div class="rule-title">Специальные приглашения (SI)</div>
+      <ul>
+        <li>На один перевод используется одно SI при необходимости — чтобы не тратить их впустую.</li>
+        <li>Если ни один игрок не нуждается в SI, его можно сохранить для открытого перевода или друзей.</li>
+        <li>Рекомендуется поддерживать запас в 3 SI на перевод, если они не расходуются на тех, кому они действительно нужны.</li>
+      </ul>
+      <div class="rule-title">Критерии допуска игроков</div>
+      <ul>
+        <li>Приглашения игрокам ниже FC5 не отправляются; они могут присоединиться в период открытого перевода 3-го этапа.</li>
+        <li>Если суммарное число переводов будет меньше 35, приглашения могут быть расширены на игроков ниже FC5 по принципу «первый пришёл — первый обслужен».</li>
+      </ul>
+      <div class="rule-title">Группы и высокоуровневые игроки</div>
+      <ul>
+        <li>Группы более 5 человек или сильные игроки проходят полную проверку: анкетирование, проверку активности и уровня силы, наличие Discord или альтернативного канала связи.</li>
+        <li>Небольшие группы (до 5 человек) могут пройти упрощённую проверку по усмотрению.</li>
+        <li>Одиночные игроки или группы до 3 человек, рекомендованные доверенными участниками, могут получить исключения.</li>
+        <li>Группы из 4 и более человек или очень сильные игроки всегда проходят полную проверку.</li>
+      </ul>
+      <div class="rule-title">Приоритеты и сроки</div>
+      <ul>
+        <li>Приоритет отдаётся альянсам с наибольшим количеством свободных мест.</li>
+        <li>Друзья действующих участников имеют небольшое преимущество перед совершенно новыми группами.</li>
+        <li>За 24 часа до завершения 2-го этапа кандидатам 3-го этапа отправляются приглашения.</li>
+      </ul>
+      <div class="rule-title">Запросы на создание нового альянса</div>
+      <ul>
+        <li>Разрешение на создание нового альянса или интеграцию группы в существующий определяется голосованием.</li>
+        <li>Если перешедшая группа хочет создать новый альянс, но голосование дало результат «против», сначала необходимо рассмотреть все альтернативы.</li>
+        <li>Если решения найти не удаётся, группа вправе основать новый альянс NAP.</li>
+      </ul>
+    </div>
+  `
+}
+
+}; // end translations
+
+// ============================================================
+// APP LOGIC
+// ============================================================
+let currentLang = 'en';
+
+function setLang(lang, btn) {
+  currentLang = lang;
+  const t = translations[lang];
+
+  // Update language buttons
+  document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+
+  // Update subtitle
+  document.querySelector('[data-i18n="subtitle"]').textContent = t.subtitle;
+  document.querySelector('[data-i18n="footer_text"]').textContent = t.footer_text;
+  document.querySelector('[data-i18n="nap7_list_title"]').textContent = t.nap7_list_title;
+  document.querySelector('[data-i18n="event_times_title"]').textContent = t.event_times_title;
+  document.querySelector('[data-i18n="th_alliance"]').textContent = t.th_alliance;
+
+  // Update tabs
+  document.querySelectorAll('[data-i18n-tab]').forEach(btn => {
+    const key = btn.getAttribute('data-i18n-tab');
+    if (t[key]) btn.textContent = t[key];
+  });
+
+  // Update content areas
+  document.getElementById('nap-content').innerHTML = t.nap;
+  document.getElementById('facility-content').innerHTML = t.facility;
+  document.getElementById('castle-content').innerHTML = t.castle;
+  document.getElementById('bia-content').innerHTML = t.bia;
+  document.getElementById('transfers-content').innerHTML = t.transfers;
+}
+
+function showTab(name, btn) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  btn.classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// Init content
+window.addEventListener('DOMContentLoaded', () => {
+  const t = translations['en'];
+  document.getElementById('nap-content').innerHTML = t.nap;
+  document.getElementById('facility-content').innerHTML = t.facility;
+  document.getElementById('castle-content').innerHTML = t.castle;
+  document.getElementById('bia-content').innerHTML = t.bia;
+  document.getElementById('transfers-content').innerHTML = t.transfers;
+});
+</script>
+</body>
+</html>
